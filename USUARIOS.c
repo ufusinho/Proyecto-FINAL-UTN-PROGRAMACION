@@ -3,13 +3,14 @@
 #include <string.h>
 #include "USUARIOS.h"
 
-int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){
-  if (indice >= validos){
-     return -1;
- } /// INDICE ES MAYOR. -1.
-  if (strcasecmp(usuarios[indice].nombre, nombre) == 0) {
-    return indice; // 0 NO ENCUENTRA
-  }
+int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){ // se elimino llamada recursiva para evitar consumo innecesario.
+    for(int i = indice; i < validos; i++){
+        if(strcasecmp(usuarios[i].nombre, nombre) == 0){
+          return i;
+       }
+    }
+    return -1;
+}
   return buscarUsuarioPorNombreRecursivo(usuarios, validos, nombre, indice + 1);
  } // 1| ENCUENTRA.
 
@@ -89,7 +90,7 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
       auxContrasenia[strcspn(auxContrasenia, "\n")] = '\0';
 
     if(!validarContrasenia(auxContrasenia)){
-        printf("\nLa contraseña es demasiado corta.\n");
+        printf("\nLa contraseÃ±a es demasiado corta.\n");
      }
 
   } while (!validarContrasenia(auxContrasenia));
