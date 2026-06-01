@@ -12,7 +12,7 @@ int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nomb
     return -1;
 }
   return buscarUsuarioPorNombreRecursivo(usuarios, validos, nombre, indice + 1);
- } // 1| ENCUENTRA.
+ } 
 
 int buscarMaximoIdUsuario(stUsuario usuarios[], int validos){
 int maxId = 0;
