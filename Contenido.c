@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
@@ -9,51 +10,29 @@ void limpiarBuffer(void){
     while ((c = getchar()) != '\n' && c != EOF);
 }
 // Alta de contenidos(solo admis).
-int obtenerProximoIDContenido(char archivo[]){
+int obtenerProximoIDContenido(stContenido contenidos[], int validos){
 
-    FILE *archi;
-    stContenido aux;
     int mayorID = 0;
 
-    archi = fopen(archivo, "rb");
-    if(archi == NULL){
-
-        return 1;
-    }
-
-    while(fread(&aux, sizeof(stContenido), 1, archi) > 0){
-
-        if(aux.idContenido > mayorID){
-
-            mayorID = aux.idContenido;
+        for(int i = 0; i < validos; i++){
+            if(contenidos[i].idContenido > mayorID){
+                mayorID = contenidos[i].idContenido;
+            }
         }
 
-    }
-
-    fclose(archi);
-
-    return mayorID +1;
+    return mayorID + 1;
 }
-int existenciaDeTitulo(char archivo[], char titulo[]){
+int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]){
 
-    FILE * archi;
-    stContenido aux;
 
-    archi = fopen(archivo, "rb");
-    if(archi == NULL){
-        printf("\n El archivo no se ha podido abrir. \n");
-        return 0;
-    }
 
-    while(fread(&aux, sizeof(stContenido), 1, archi) > 0){
+    for(int i = 0; i < validos; i++){
+        if(strcmpi(contenidos[i].titulo, titulo)== 0 && contenidos[i].activo == 1){
 
-        if(strcmpi(aux.titulo, titulo) == 0){
-            fclose(archi);
             return 1;
         }
     }
 
-    fclose(archi);
     return 0;
 
 }
@@ -147,158 +126,121 @@ int cargarAnio(){
     return anio;
 
 }
-void mostrarGeneros(char archivoGenero[]){
+void mostrarGeneros(stGenero generos[], int validosGeneros){
 
-    FILE *archi;
-    stGenero aux;
+    for(int i = 0; i < validosGeneros; i++){
 
-    archi = fopen(archivoGenero, "rb");
-    if(archi == NULL){
-        printf("\n El archivo no se ha podido abrir. ");
-        return;
-    }
-    while(fread(&aux, sizeof(stGenero), 1, archi) > 0){
-
-        if(aux.activo == 1){
-
-            printf("\nID: %d ", aux.idGenero);
-            printf("\nNombre: %s", aux.nombre);
-            printf("\nDescripcion: %s", aux.descripcion);
-            printf("\n----------------------------------\n");
+            if(generos[i].activo == 1){
+                printf("\nID: %d", generos[i].idGenero);
+                printf("\nNombre: %s", generos[i].nombre);
+                printf("\nDescripcion: %s", generos[i].descripcion);
+                printf("\n-----------------------------\n");
+            }
         }
-
-    }
-
-    fclose(archi);
-
 }
-int existenciaDeGenero(char archivoGeneros[], int idGenero){
+int existenciaDeGenero(stGenero generos[], int validosGeneros, int idGenero){
 
-    FILE *archi;
+    for(int i = 0; i < validosGeneros; i++){
 
-    stGenero aux;
-
-    archi = fopen(archivoGeneros, "rb");
-    if(archi == NULL){
-
-        printf("\n El archivo no se ha podido abrir. ");
-        return -1;
-
-    }
-
-    while(fread(&aux, sizeof(stGenero), 1, archi) > 0){
-
-        if(aux.idGenero == idGenero && aux.activo == 1){
-            fclose(archi);
-            return 1;
+            if(generos[i].idGenero == idGenero && generos[i].activo == 1){
+                return 1;
         }
-
     }
 
-    fclose(archi);
     return 0;
-
-
 }
-int seleccionarGenero(char archivoGenero[]){
-
+int seleccionarGenero(stGenero generos[], int validosGeneros){
     int opcion = 0;
-    int existencia = 0;
-
+    int existe = 0;
 
     do{
-    mostrarGeneros(archivoGenero);
-    printf("\n Ingrese el ID del genero. ");
-    scanf("%d", &opcion);
-    existencia = existenciaDeGenero(archivoGenero, opcion);
-    if(existencia == 0){
+        mostrarGeneros(generos, validosGeneros);
 
-        printf("\n Genero invalido. ");
-    }
-    }while(existencia == 0);
+        printf("\n Ingrese el ID del genero: ");
+        scanf("%d", &opcion);
+
+        existe = existenciaDeGenero(generos, validosGeneros, opcion);
+
+        if(existe == 0){
+            printf("\n Genero invalido. ");
+        }
+
+    }while(existe == 0);
 
     return opcion;
-
 }
-void guardarUnContenido(char archivoContenido[], stContenido nuevoContenido){
-
-    FILE *archi;
-
-    archi = fopen(archivoContenido, "ab");
-    if(archi == NULL){
-
-        printf("\n El archivo no se ha podido abrir. ");
-        return;
-    }
-
-    fwrite(&nuevoContenido, sizeof(stContenido), 1, archi);
-
-    fclose(archi);
-
-}
-stContenido cargarUnContenido(char archivoGenero[], char archivoContenido[]){
+stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros){
 
     stContenido nuevoContenido;
-    int existencia;
-    int opcion = 0;
+    int existencia = 0;
+    int opcion;
 
-
-
-    nuevoContenido.idContenido = obtenerProximoIDContenido(archivoContenido);
+    nuevoContenido.idContenido = obtenerProximoIDContenido(contenidos, validosContenidos);
 
     do{
+        printf("\n Ingrese el titulo: ");
+        limpiarBuffer();
+        fgets(nuevoContenido.titulo, 60, stdin);
+        nuevoContenido.titulo[strcspn(nuevoContenido.titulo, "\n")] = '\0';
 
-    printf("\n Ingrese el titulo. \n");
-    limpiarBuffer();
-    fgets(nuevoContenido.titulo, 60, stdin);
-    nuevoContenido.titulo[strcspn(nuevoContenido.titulo, "\n")] = '\0';
+        existencia = existenciaDeTitulo(contenidos, validosContenidos, nuevoContenido.titulo);
 
-    existencia = existenciaDeTitulo(archivoContenido, nuevoContenido.titulo);
-
-    if(existencia == 1){
-
-        printf("\n\t\t\t Titulo ya existente. ");
+        if(existencia == 1){
+            printf("\n Titulo ya existente. ");
         }
 
     }while(existencia == 1);
-
-    system("cls");
 
     opcion = seleccionDeTipoContenido();
 
     switch(opcion){
 
     case 1:
-
         strcpy(nuevoContenido.tipo, "pelicula");
         nuevoContenido.duracion = cargarDuracionPelicula();
         nuevoContenido.estado = -1;
-
-
         break;
 
     case 2:
-
         strcpy(nuevoContenido.tipo, "serie");
         nuevoContenido.estado = cargarEstadoDeSerie();
         nuevoContenido.duracion = 0;
         break;
-
     }
 
     nuevoContenido.anio = cargarAnio();
 
-    printf("\n Escriba la sinopsis. \n");
+    printf("\n Escriba la sinopsis: ");
     limpiarBuffer();
     fgets(nuevoContenido.sinopsis, 300, stdin);
     nuevoContenido.sinopsis[strcspn(nuevoContenido.sinopsis, "\n")] = '\0';
 
-    nuevoContenido.idGenero = seleccionarGenero(archivoGenero);
-
+    nuevoContenido.idGenero = seleccionarGenero(generos, validosGeneros);
     nuevoContenido.activo = 1;
 
     return nuevoContenido;
+}
+stContenido *altaContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros){
 
+    stContenido nuevo;
+    stContenido *aux;
+
+    nuevo = cargarUnContenido(contenidos, *validosContenidos, generos, validosGeneros);
+
+    aux = (stContenido*) realloc(contenidos, sizeof(stContenido) * ((*validosContenidos) + 1));
+
+    if(aux == NULL){
+        printf("\n Error al reservar memoria. ");
+        return contenidos;
+    }
+
+    contenidos = aux;
+    contenidos[*validosContenidos] = nuevo;
+    (*validosContenidos)++;
+
+    printf("\n Contenido cargado correctamente. ");
+
+    return contenidos;
 }
 // Baja de contenido.
 void mostrarContenido(stContenido contenido){
@@ -309,7 +251,7 @@ void mostrarContenido(stContenido contenido){
     printf("\n Tipo: %s", contenido.tipo);
     printf("\n Anio: %d", contenido.anio);
     printf("\n id genero: %d", contenido.idGenero);
-    if(strcmp(contenido.tipo, "pelicula")== 0){
+    if(strcmpi(contenido.tipo, "pelicula")== 0){
 
         printf("\n Duracion: %d minutos", contenido.duracion);
 
@@ -334,102 +276,53 @@ void mostrarContenido(stContenido contenido){
         }
 
 }
-int verificarVisualizaciones(char archivoVisualizaciones[], int idContenido){
+int verificarVisualizaciones(stVisualizacion visualizaciones[], int validosVisualizaciones, int idContenido){
 
-    FILE *archi;
-    stVisualizacion aux;
-
-    archi = fopen(archivoVisualizaciones, "rb");
-    if(archi == NULL){
-
-        printf("\n El archivo no se ha podido abrir. ");
-        return -1;
-    }
-    while(fread(&aux, sizeof(stVisualizacion), 1, archi)>0){
-
-        if(aux.idContenido == idContenido && aux.activo == 1){
-            fclose(archi);
+    for(int i = 0; i < validosVisualizaciones; i++){
+        if(visualizaciones[i].idContenido == idContenido && visualizaciones[i].activo == 1){
             return 1;
         }
-
     }
 
-    fclose(archi);
     return 0;
 }
-int buscarPosicionContenido(char archivoContenidos[], int idContenidos){
+int buscarPosicionContenido(stContenido contenidos[], int validos, int idContenido){
 
-    FILE *archi;
-    stContenido aux;
-    int pos = 0;
-
-    archi = fopen(archivoContenidos, "rb");
-    if(archi == NULL){
-
-        printf("\n El archivo no se ha podido abrir. ");
-        return -1;
-
-    }
-    while(fread(&aux, sizeof(stContenido), 1, archi) > 0){
-
-            if(aux.idContenido == idContenidos && aux.activo == 1){
-
-                fclose(archi);
-                return pos;
-            }
-
-            pos++;
-
+    for(int i = 0; i < validos; i++){
+        if(contenidos[i].idContenido == idContenido && contenidos[i].activo == 1){
+            return i;
         }
-
-    fclose(archi);
+    }
 
     return -1;
-
 }
-void bajaDeContenido(char archivoContenidos[], char archivoVisualizacion[]){
+void bajaDeContenido(stContenido contenidos[], int validosContenidos, stVisualizacion visualizaciones[], int validosVisualizaciones){
 
-    FILE *archi;
-    stContenido aux;
-    int idContenido;
-    int pos;
-
-    archi = fopen(archivoContenidos, "r+b");
-    if(archi == NULL){
-
-        printf("\n Error. El archivo no se ha podido abrir. ");
-        return;
-    }
+    int idContenido = 0;
+    int pos = 0;
 
     do{
-    listarContenidoActivo(archivoContenidos);
-    printf("\n Ingrese el ID del contenido que desea dar de baja. ");
-    scanf("%d", &idContenido);
-    pos = buscarPosicionContenido(archivoContenidos, idContenido);
+        listarContenidoActivo(contenidos, validosContenidos);
 
-    if(pos == -1){
+        printf("\n Ingrese el ID del contenido que desea dar de baja: ");
+        scanf("%d", &idContenido);
 
-        printf("\n El contenido no existe. ");
+        pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+
+        if(pos == -1){
+            printf("\n El contenido no existe. ");
         }
 
     }while(pos == -1);
 
-    fseek(archi, pos * sizeof(stContenido), SEEK_SET);
-    fread(&aux, sizeof(stContenido), 1, archi);
-    if(verificarVisualizaciones(archivoVisualizacion, idContenido) == 1){
-
+    if(verificarVisualizaciones(visualizaciones, validosVisualizaciones, idContenido) == 1){
         printf("\n Error! El contenido tiene visualizaciones activas. ");
-        fclose(archi);
         return;
     }
-    aux.activo = 0;
-    fseek(archi, pos * sizeof(stContenido), SEEK_SET);
-    fwrite(&aux, sizeof(stContenido), 1, archi);
+
+    contenidos[pos].activo = 0;
 
     printf("\n Contenido dado de baja correctamente. ");
-
-    fclose(archi);
-
 }
 // Modificaciones.
 void menuDeModificaciones(){
@@ -442,277 +335,168 @@ void menuDeModificaciones(){
     printf("\n0- Guardar todo. ");
 
 }
-void modificarDatosDeContenidos(stContenido *contenido, char archivoContenidos[], char archivoGenero[]){
+int existenciaDeTituloExceptoID(stContenido contenidos[], int validos, char titulo[], int idContenido){
 
-        int opcion = 0;
-        int existencia;
-
-        do{
-            menuDeModificaciones();
-            scanf("%d", &opcion);
-
-            switch(opcion){
-
-
-            case 1:
-
-
-                do{
-                    printf("\n Ingrese el nuevo titulo. ");
-                    limpiarBuffer();
-                    fgets(contenido->titulo, 60, stdin);
-                    contenido->titulo[strcspn(contenido->titulo, "\n")] = '\0';
-                    existencia = existenciaDeTitulo(archivoContenidos, contenido->titulo);
-                    if(existencia == 1){
-                        printf("\n El titulo ya existe. ");
-                    }
-
-                }while(existencia == 1);
-                break;
-
-            case 2:
-
-                printf("\n Ingrese el nuevo anio. ");
-                contenido->anio = cargarAnio();
-                break;
-
-            case 3:
-
-                contenido->idGenero = seleccionarGenero(archivoGenero);
-                break;
-
-            case 4:
-
-                printf("\n Ingrese la nueva sinopsis. ");
-                limpiarBuffer();
-                fgets(contenido->sinopsis, 300, stdin);
-                contenido->sinopsis[strcspn(contenido->sinopsis, "\n")] = '\0';
-                break;
-
-            case 5:
-
-                if(strcmp(contenido->tipo, "pelicula")== 0){
-
-                    contenido->duracion = cargarDuracionPelicula();
-
-
-                }else{
-
-                    contenido->estado = cargarEstadoDeSerie();
-
-                }
-                break;
-            }
-
-        }while(opcion != 0);
-
-}
-void modificarContenido(char archivoContenido[], char archivoGenero[]){
-
-    FILE *archi;
-    int pos = 0;
-    int idContenido;
-    stContenido aux;
-
-    archi = fopen(archivoContenido, "r+b");
-    if(archi == NULL){
-
-        printf("\n Error al abrir el archivo.");
-        return;
+    for(int i = 0; i < validos; i++){
+        if(strcmpi(contenidos[i].titulo, titulo) == 0 && contenidos[i].idContenido != idContenido && contenidos[i].activo == 1){
+            return 1;
+        }
     }
+
+    return 0;
+}
+void modificarDatosDeContenidos(stContenido *contenidoActual, stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros){
+
+    int opcion = 0;
+    int existencia = 0;
 
     do{
-    listarContenidoActivo(archivoContenido);
+        menuDeModificaciones();
+        scanf("%d", &opcion);
 
-    printf("\n Ingrese el ID. ");
-    scanf("%d", &idContenido);
-    pos = buscarPosicionContenido(archivoContenido, idContenido);
-    if(pos == -1){
-        printf("\n Contenido inexistente.");
-    }
+        switch(opcion){
+
+        case 1:
+            do{
+                printf("\n Ingrese el nuevo titulo: ");
+                limpiarBuffer();
+                fgets(contenidoActual->titulo, 60, stdin);
+                contenidoActual->titulo[strcspn(contenidoActual->titulo, "\n")] = '\0';
+
+                existencia = existenciaDeTituloExceptoID(contenidos, validosContenidos, contenidoActual->titulo, contenidoActual->idContenido);
+                if(existencia == 1){
+                    printf("\n El titulo ya existe. ");
+                }
+
+            }while(existencia == 1);
+            break;
+
+        case 2:
+            contenidoActual->anio = cargarAnio();
+            break;
+
+        case 3:
+            contenidoActual->idGenero = seleccionarGenero(generos, validosGeneros);
+            break;
+
+        case 4:
+            printf("\n Ingrese la nueva sinopsis: ");
+            limpiarBuffer();
+            fgets(contenidoActual->sinopsis, 300, stdin);
+            contenidoActual->sinopsis[strcspn(contenidoActual->sinopsis, "\n")] = '\0';
+            break;
+
+        case 5:
+            if(strcmpi(contenidoActual->tipo, "pelicula") == 0){
+                contenidoActual->duracion = cargarDuracionPelicula();
+            }else{
+                contenidoActual->estado = cargarEstadoDeSerie();
+            }
+            break;
+        }
+
+    }while(opcion != 0);
+
+}
+void modificarContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros){
+    int idContenido;
+    int pos;
+
+    do{
+        listarContenidoActivo(contenidos, validosContenidos);
+
+        printf("\n Ingrese el ID del contenido a modificar: ");
+        scanf("%d", &idContenido);
+
+        pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+
+        if(pos == -1){
+            printf("\n Contenido inexistente. ");
+        }
+
     }while(pos == -1);
 
-    fseek(archi, pos * sizeof(stContenido), SEEK_SET);
-    fread(&aux, sizeof(stContenido), 1, archi);
-
     printf("\n Datos actuales: ");
-    mostrarContenido(aux);
-    modificarDatosDeContenidos(&aux, archivoContenido, archivoGenero);
+    mostrarContenido(contenidos[pos]);
 
-    fseek(archi, pos * sizeof(stContenido), SEEK_SET);
-    fwrite(&aux, sizeof(stContenido), 1, archi);
+    modificarDatosDeContenidos(&contenidos[pos], contenidos, validosContenidos, generos, validosGeneros);
 
-    fclose(archi);
-
+    printf("\n Contenido modificado correctamente. ");
 
 }
 // Consulta y listado.
-void consultarContenidoPorTitulo(char archivoContenido[]){
+void consultarContenidoPorTitulo(stContenido contenidos[], int validosContenidos){
 
-    FILE *archi;
-    stContenido aux;
     char tituloBuscado[60];
 
-    archi = fopen(archivoContenido, "rb");
-    if(archi == NULL){
 
-        printf("\n Error al abrir el archivo. ");
-        return;
-
-    }
-
-    printf("\n\t\t\t Buscar titulo. ");
-    printf("\n Ingrese el titulo buscado. ");
+    printf("\n Ingrese el titulo buscado: ");
     limpiarBuffer();
     fgets(tituloBuscado, 60, stdin);
     tituloBuscado[strcspn(tituloBuscado, "\n")] = '\0';
 
-
-    while(fread(&aux, sizeof(stContenido), 1, archi)>0){
-
-        if(strcmpi(aux.titulo, tituloBuscado)==0 && aux.activo == 1){
-
-            mostrarContenido(aux);
-            fclose(archi);
+    for(int i = 0; i < validosContenidos; i++){
+        if(strcmpi(contenidos[i].titulo, tituloBuscado) == 0 &&
+           contenidos[i].activo == 1){
+            mostrarContenido(contenidos[i]);
             return;
-
         }
-
     }
 
     printf("\n Contenido no encontrado. ");
 
-    fclose(archi);
 }
-void listarPeliculas(char archivoContenido[]){
+void listarPeliculas(stContenido contenidos[], int validosContenidos){
 
-    FILE *archi;
-    stContenido aux;
-
-    archi = fopen(archivoContenido, "rb");
-    if(archi == NULL){
-
-        printf("\n Error al abrir el archivo. ");
-        return;
-    }
-
-    while(fread(&aux, sizeof(stContenido), 1, archi)> 0){
-
-        if(aux.activo == 1 && strcmpi(aux.tipo, "pelicula") == 0){
-
-            mostrarContenido(aux);
-
+    for(int i = 0; i < validosContenidos; i++){
+        if(contenidos[i].activo == 1 && strcmpi(contenidos[i].tipo, "pelicula") == 0){
+            mostrarContenido(contenidos[i]);
         }
-
     }
-
-    fclose(archi);
-
 }
-void listarSeries(char archivoContenido[]){
+void listarSeries(stContenido contenidos[], int validosContenidos){
 
-    FILE *archi;
-    stContenido aux;
-
-    archi = fopen(archivoContenido, "rb");
-    if(archi == NULL){
-
-        printf("\n Error al abrir el archivo. ");
-        return;
-
-    }
-
-    while(fread(&aux, sizeof(stContenido), 1, archi)>0){
-
-        if(aux.activo == 1 && strcmpi(aux.tipo, "serie") == 0){
-
-            mostrarContenido(aux);
-
+    for(int i = 0; i < validosContenidos; i++){
+        if(contenidos[i].activo == 1 && strcmpi(contenidos[i].tipo, "serie") == 0){
+            mostrarContenido(contenidos[i]);
         }
-
     }
-    fclose(archi);
-
 }
-void listarPorGenero(char archivoContenido[], char archivoGeneros[]){
+void listarPorGenero(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros){
 
-    FILE *archi;
-    stContenido aux;
     int idGenero = 0;
 
+    idGenero = seleccionarGenero(generos, validosGeneros);
 
-    mostrarGeneros(archivoGeneros);
-    idGenero = seleccionarGenero(archivoGeneros);
-
-    archi = fopen(archivoContenido, "rb");
-    if(archi == NULL){
-
-        printf("\n Error al abrir el archivo. ");
-        return;
-
+    for(int i = 0; i < validosContenidos; i++){
+        if(contenidos[i].activo == 1 && contenidos[i].idGenero == idGenero){
+            mostrarContenido(contenidos[i]);
+        }
     }
-
-    while(fread(&aux, sizeof(stContenido), 1, archi)>0){
-
-            if(idGenero == aux.idGenero && aux.activo == 1){
-
-                mostrarContenido(aux);
-            }
-
-    }
-    fclose(archi);
 }
-void consultarContenidoPorID(char archivoContenido[]){
+void consultarContenidoPorID(stContenido contenidos[], int validosContenidos){
 
-    FILE *archi;
     int idContenidoBuscado = 0;
-    stContenido aux;
 
-    archi = fopen(archivoContenido, "rb");
-    if(archi == NULL){
-
-        printf("\n Error al abrir el archivo. ");
-        return;
-
-    }
-
-    printf("\n Ingrese el ID. ");
+    printf("\n Ingrese el ID: ");
     scanf("%d", &idContenidoBuscado);
 
-    while(fread(&aux, sizeof(stContenido), 1, archi)>0){
-
-        if(aux.idContenido == idContenidoBuscado && aux.activo == 1){
-
-            mostrarContenido(aux);
-            fclose(archi);
+    for(int i = 0; i < validosContenidos; i++){
+        if(contenidos[i].idContenido == idContenidoBuscado && contenidos[i].activo == 1){
+            mostrarContenido(contenidos[i]);
             return;
         }
-
     }
 
     printf("\n No se ha encontrado el contenido. ");
-    fclose(archi);
+
 }
-void listarContenidoActivo(char archivoContenidos[]){
+void listarContenidoActivo(stContenido contenidos[], int validosContenidos){
 
-    FILE *archi;
-    stContenido aux;
-
-    archi = fopen(archivoContenidos, "rb");
-    if(archi == NULL){
-
-        printf("\n El archivo no se ha podido abrir. ");
-        return;
-    }
-
-    while(fread(&aux, sizeof(stContenido), 1, archi)>0){
-
-        if(aux.activo == 1){
-            mostrarContenido(aux);
-            printf("\n --------------------------- \n");
+    for(int i = 0; i < validosContenidos; i++){
+        if(contenidos[i].activo == 1){
+            mostrarContenido(contenidos[i]);
+            printf("\n-----------------------------\n");
         }
     }
-
-    fclose(archi);
-
 }
