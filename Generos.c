@@ -23,7 +23,7 @@ void aMinusculas(const char *origen, char *destino, int tam)
         destino[i] = tolower(origen[i]);
 }
 ///CARGAR Y GUARDAR///
-int cargarGen(stGenero lista[], int cantidad)
+int cargarGen(stGenero lista[], int *cantidad)
 {
     FILE *archi = fopen(ARCHIVO_GENEROS, "rb");
     cantidad = 0;
@@ -113,7 +113,7 @@ void listarGen(stGenero lista[], int cantidad)
         printf("No hay generos activos\n");
 }
 ///ABMyC///
-void altaGen(stGenero lista[], int cantidad)
+void altaGen(stGenero lista[], int *cantidad)
 {
     stGenero nuevo;
 
