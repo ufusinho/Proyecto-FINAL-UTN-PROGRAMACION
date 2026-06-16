@@ -13,9 +13,9 @@ typedef struct{
  int activo;
 }stGenero;
 
-int cargarGen(stGenero lista[], int cantidad);
+int cargarGen(stGenero lista[], int *cantidad);
 int guardarGen(stGenero lista[],int cantidad);
-void altaGen(stGenero lista[],int cantidad);
+void altaGen(stGenero lista[],int *cantidad);
 void bajaGen(stGenero lista[],int cantidad,int cantContenido,int idGenContenido[]);
 void modificarGen(stGenero lista[],int cantidad);
 void consultarGen(stGenero lista[],int cantidad);
