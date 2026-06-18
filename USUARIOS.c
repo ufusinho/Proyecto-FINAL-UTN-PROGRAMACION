@@ -154,16 +154,16 @@ void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos) {
      }
  }
 
-void mostrarListaUsuarios(stUsuario usuarios[], int validos) {
-    ordenarUsuariosPorNombre(usuarios, validos);
-    printf("\n===================================================================\n");
-    printf("%-5s | %-20s | %-25s | %-15s\n", "ID", "Nombre", "Email", "Rol");
-    printf("===================================================================\n");
+void mostrarListaUsuarios(stUsuario usuarios[], int validos) { 
+   ordenarUsuariosPorNombre(usuarios, validos);
+   printf("\nID / Nombre / Email / Rol\n");
     for (int i = 0; i < validos; i++) {
-        if (usuarios[i].activo == 1) {
-            printf("%-5d | %-20s | %-25s | %-15s\n",usuarios[i].idUsuario,  usuarios[i].nombre, usuarios[i].email, usuarios[i].rol);
+      if (usuarios[i].activo == 1) {
+         printf("%d / %s / %s / %s\n", 
+          usuarios[i].idUsuario, 
+          usuarios[i].nombre, 
+          usuarios[i].email, 
+          usuarios[i].rol);
         }
     }
-    printf("===================================================================\n");
 }
-
