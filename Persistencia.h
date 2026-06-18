@@ -6,6 +6,9 @@
 #include "USUARIOS.h"
 #include "Visualizaciones.h"
 
+#define ARCHIVO_USUARIOS "usuarios.dat"
+#define MAX_USUARIOS 100
+
 /// Contenidos
 int cargarContenido(stContenido contenidos[], int *validosContenidos);
 int guardarContenidos(stContenido contenidos[], int validosContenidos);
