@@ -9,6 +9,46 @@ void limpiarBuffer(void){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+// Carga y guardado.
+int cargarContenido(stContenido contenidos[], int *validosContenidos){
+
+    FILE *archi = fopen(ARCHIVO_CONTENIDOS, "rb");
+    *validosContenidos = 0;
+
+    if(archi == NULL){
+        archi = fopen(ARCHIVO_CONTENIDOS, "wb");
+        if(archi == NULL){
+            printf("\n Error al crear el archivo de contenidos. ");
+            return 0;
+        }
+        fclose(archi);
+        return 1;
+    }
+
+    while(*validosContenidos < MAX_CONTENIDOS && fread(&contenidos[*validosContenidos], sizeof(stContenido), 1, archi) > 0){
+
+            (*validosContenidos)++;
+    }
+
+    fclose(archi);
+    return 1;
+}
+int guardarContenidos(stContenido contenidos[], int validosContenidos){
+
+    FILE *archi = fopen(ARCHIVO_CONTENIDOS, "wb");
+
+    if(archi == NULL){
+
+            printf("\n Error al abrir el archivo de contenidos. ");
+            return 0;
+    }
+
+    fwrite(contenidos, sizeof(stContenido), validosContenidos, archi);
+
+    fclose(archi);
+
+    return 1;
+}
 // Alta de contenidos(solo admis).
 int obtenerProximoIDContenido(stContenido contenidos[], int validos){
 
@@ -27,7 +67,7 @@ int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]){
 
 
     for(int i = 0; i < validos; i++){
-        if(strcmpi(contenidos[i].titulo, titulo)== 0 && contenidos[i].activo == 1){
+        if(strcmpi(contenidos[i].titulo, titulo)== 0 && contenidos[i].activo == ACTIVO){
 
             return 1;
         }
@@ -130,7 +170,7 @@ void mostrarGeneros(stGenero generos[], int validosGeneros){
 
     for(int i = 0; i < validosGeneros; i++){
 
-            if(generos[i].activo == 1){
+            if(generos[i].activo == ACTIVO){
                 printf("\nID: %d", generos[i].idGenero);
                 printf("\nNombre: %s", generos[i].nombre);
                 printf("\nDescripcion: %s", generos[i].descripcion);
@@ -142,7 +182,7 @@ int existenciaDeGenero(stGenero generos[], int validosGeneros, int idGenero){
 
     for(int i = 0; i < validosGeneros; i++){
 
-            if(generos[i].idGenero == idGenero && generos[i].activo == 1){
+            if(generos[i].idGenero == idGenero && generos[i].activo == ACTIVO){
                 return 1;
         }
     }
@@ -216,31 +256,26 @@ stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, s
     nuevoContenido.sinopsis[strcspn(nuevoContenido.sinopsis, "\n")] = '\0';
 
     nuevoContenido.idGenero = seleccionarGenero(generos, validosGeneros);
-    nuevoContenido.activo = 1;
+    nuevoContenido.activo = ACTIVO;
 
     return nuevoContenido;
 }
-stContenido *altaContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros){
+void altaContenido(stContenido contenidos[], int *validosContenidos, int dimensionContenidos, stGenero generos[], int validosGeneros){
 
     stContenido nuevo;
-    stContenido *aux;
+
+    if(*validosContenidos >= dimensionContenidos){
+        printf("\n No hay espacio para mas contenidos. ");
+        return;
+    }
 
     nuevo = cargarUnContenido(contenidos, *validosContenidos, generos, validosGeneros);
 
-    aux = (stContenido*) realloc(contenidos, sizeof(stContenido) * ((*validosContenidos) + 1));
+   contenidos[*validosContenidos] = nuevo;
+   (*validosContenidos)++;
 
-    if(aux == NULL){
-        printf("\n Error al reservar memoria. ");
-        return contenidos;
-    }
+   printf("\n Contenido cargado correctamente. ");
 
-    contenidos = aux;
-    contenidos[*validosContenidos] = nuevo;
-    (*validosContenidos)++;
-
-    printf("\n Contenido cargado correctamente. ");
-
-    return contenidos;
 }
 // Baja de contenido.
 void mostrarContenido(stContenido contenido){
@@ -268,7 +303,7 @@ void mostrarContenido(stContenido contenido){
 
 
     }
-        if(contenido.activo == 1){
+        if(contenido.activo == ACTIVO){
             printf("\n Contenido activo. ");
         }else{
             printf("\n Contenido inactivo. ");
@@ -279,7 +314,7 @@ void mostrarContenido(stContenido contenido){
 int verificarVisualizaciones(stVisualizacion visualizaciones[], int validosVisualizaciones, int idContenido){
 
     for(int i = 0; i < validosVisualizaciones; i++){
-        if(visualizaciones[i].idContenido == idContenido && visualizaciones[i].activo == 1){
+        if(visualizaciones[i].idContenido == idContenido && visualizaciones[i].activo == ACTIVO){
             return 1;
         }
     }
@@ -289,7 +324,7 @@ int verificarVisualizaciones(stVisualizacion visualizaciones[], int validosVisua
 int buscarPosicionContenido(stContenido contenidos[], int validos, int idContenido){
 
     for(int i = 0; i < validos; i++){
-        if(contenidos[i].idContenido == idContenido && contenidos[i].activo == 1){
+        if(contenidos[i].idContenido == idContenido && contenidos[i].activo == ACTIVO){
             return i;
         }
     }
@@ -320,7 +355,7 @@ void bajaDeContenido(stContenido contenidos[], int validosContenidos, stVisualiz
         return;
     }
 
-    contenidos[pos].activo = 0;
+    contenidos[pos].activo = INACTIVO;
 
     printf("\n Contenido dado de baja correctamente. ");
 }
@@ -338,7 +373,7 @@ void menuDeModificaciones(){
 int existenciaDeTituloExceptoID(stContenido contenidos[], int validos, char titulo[], int idContenido){
 
     for(int i = 0; i < validos; i++){
-        if(strcmpi(contenidos[i].titulo, titulo) == 0 && contenidos[i].idContenido != idContenido && contenidos[i].activo == 1){
+        if(strcmpi(contenidos[i].titulo, titulo) == 0 && contenidos[i].idContenido != idContenido && contenidos[i].activo == ACTIVO){
             return 1;
         }
     }
@@ -437,7 +472,7 @@ void consultarContenidoPorTitulo(stContenido contenidos[], int validosContenidos
 
     for(int i = 0; i < validosContenidos; i++){
         if(strcmpi(contenidos[i].titulo, tituloBuscado) == 0 &&
-           contenidos[i].activo == 1){
+           contenidos[i].activo == ACTIVO){
             mostrarContenido(contenidos[i]);
             return;
         }
@@ -449,7 +484,7 @@ void consultarContenidoPorTitulo(stContenido contenidos[], int validosContenidos
 void listarPeliculas(stContenido contenidos[], int validosContenidos){
 
     for(int i = 0; i < validosContenidos; i++){
-        if(contenidos[i].activo == 1 && strcmpi(contenidos[i].tipo, "pelicula") == 0){
+        if(contenidos[i].activo == ACTIVO && strcmpi(contenidos[i].tipo, "pelicula") == 0){
             mostrarContenido(contenidos[i]);
         }
     }
@@ -457,7 +492,7 @@ void listarPeliculas(stContenido contenidos[], int validosContenidos){
 void listarSeries(stContenido contenidos[], int validosContenidos){
 
     for(int i = 0; i < validosContenidos; i++){
-        if(contenidos[i].activo == 1 && strcmpi(contenidos[i].tipo, "serie") == 0){
+        if(contenidos[i].activo == ACTIVO && strcmpi(contenidos[i].tipo, "serie") == 0){
             mostrarContenido(contenidos[i]);
         }
     }
@@ -469,7 +504,7 @@ void listarPorGenero(stContenido contenidos[], int validosContenidos, stGenero g
     idGenero = seleccionarGenero(generos, validosGeneros);
 
     for(int i = 0; i < validosContenidos; i++){
-        if(contenidos[i].activo == 1 && contenidos[i].idGenero == idGenero){
+        if(contenidos[i].activo == ACTIVO && contenidos[i].idGenero == idGenero){
             mostrarContenido(contenidos[i]);
         }
     }
@@ -482,7 +517,7 @@ void consultarContenidoPorID(stContenido contenidos[], int validosContenidos){
     scanf("%d", &idContenidoBuscado);
 
     for(int i = 0; i < validosContenidos; i++){
-        if(contenidos[i].idContenido == idContenidoBuscado && contenidos[i].activo == 1){
+        if(contenidos[i].idContenido == idContenidoBuscado && contenidos[i].activo == ACTIVO){
             mostrarContenido(contenidos[i]);
             return;
         }
@@ -494,7 +529,7 @@ void consultarContenidoPorID(stContenido contenidos[], int validosContenidos){
 void listarContenidoActivo(stContenido contenidos[], int validosContenidos){
 
     for(int i = 0; i < validosContenidos; i++){
-        if(contenidos[i].activo == 1){
+        if(contenidos[i].activo == ACTIVO){
             mostrarContenido(contenidos[i]);
             printf("\n-----------------------------\n");
         }

@@ -4,6 +4,11 @@
 #include "Generos.h"
 #include "Visualizaciones.h"
 
+#define ARCHIVO_CONTENIDOS "contenido.dat"
+#define MAX_CONTENIDOS 100
+#define ACTIVO 1
+#define INACTIVO 0
+
 /// Estructuras.
 
 typedef struct {
@@ -21,6 +26,10 @@ typedef struct {
 
 /// Prototipados.
 
+// Cargar y guardado.
+int cargarContenido(stContenido contenidos[], int *validosContenidos);
+int guardarContenidos(stContenido contenidos[], int validosContenidos);
+
 // Alta de contenido.
 int obtenerProximoIDContenido(stContenido contenidos[], int validos);
 int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]);
@@ -32,7 +41,7 @@ void mostrarGeneros(stGenero generos[], int validosGeneros);
 int existenciaDeGenero(stGenero generos[], int validosGeneros, int idGenero);
 int seleccionarGenero(stGenero generos[], int validosGeneros);
 stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros);
-stContenido *altaContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros);
+void altaContenido(stContenido contenidos[], int *validosContenidos, int dimensionContenidos, stGenero generos[], int validosGeneros);
 
 // Baja de contenido.
 void mostrarContenido(stContenido contenido);
