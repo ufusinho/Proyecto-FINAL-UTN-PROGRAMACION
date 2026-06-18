@@ -9,46 +9,6 @@ void limpiarBuffer(void){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
-// Carga y guardado.
-int cargarContenido(stContenido contenidos[], int *validosContenidos){
-
-    FILE *archi = fopen(ARCHIVO_CONTENIDOS, "rb");
-    *validosContenidos = 0;
-
-    if(archi == NULL){
-        archi = fopen(ARCHIVO_CONTENIDOS, "wb");
-        if(archi == NULL){
-            printf("\n Error al crear el archivo de contenidos. ");
-            return 0;
-        }
-        fclose(archi);
-        return 1;
-    }
-
-    while(*validosContenidos < MAX_CONTENIDOS && fread(&contenidos[*validosContenidos], sizeof(stContenido), 1, archi) > 0){
-
-            (*validosContenidos)++;
-    }
-
-    fclose(archi);
-    return 1;
-}
-int guardarContenidos(stContenido contenidos[], int validosContenidos){
-
-    FILE *archi = fopen(ARCHIVO_CONTENIDOS, "wb");
-
-    if(archi == NULL){
-
-            printf("\n Error al abrir el archivo de contenidos. ");
-            return 0;
-    }
-
-    fwrite(contenidos, sizeof(stContenido), validosContenidos, archi);
-
-    fclose(archi);
-
-    return 1;
-}
 // Alta de contenidos(solo admis).
 int obtenerProximoIDContenido(stContenido contenidos[], int validos){
 

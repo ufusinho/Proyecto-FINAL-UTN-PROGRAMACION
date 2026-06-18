@@ -26,10 +26,6 @@ typedef struct {
 
 /// Prototipados.
 
-// Cargar y guardado.
-int cargarContenido(stContenido contenidos[], int *validosContenidos);
-int guardarContenidos(stContenido contenidos[], int validosContenidos);
-
 // Alta de contenido.
 int obtenerProximoIDContenido(stContenido contenidos[], int validos);
 int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]);
