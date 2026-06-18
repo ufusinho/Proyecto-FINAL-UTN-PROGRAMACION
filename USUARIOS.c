@@ -199,7 +199,7 @@ void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
         } else {
             break;
         }
-    } while (1);
+    } while (1); //bucle infinito
 
     if (strcmp(usuarios[indice].rol, "administrador") == 0 && contarAdministradoresActivos(usuarios, validos) <= 1) {
         printf("Rol actual: %s (Protegido por ser el unico administrador activo!!!)\n", usuarios[indice].rol);
