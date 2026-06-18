@@ -38,7 +38,7 @@ int cargarGen(stGenero lista[], int *cantidad)
         return 1;
     }
 
-    while (cantidad < MAX_GENEROS && fread(&lista[cantidad], sizeof(stGenero), 1, archi) > 0)
+    while (*cantidad < MAX_GENEROS && fread(&lista[cantidad], sizeof(stGenero), 1, archi) > 0)
         cantidad++;
 
     fclose(archi);
@@ -117,7 +117,7 @@ void altaGen(stGenero lista[], int *cantidad)
 {
     stGenero nuevo;
 
-    if (cantidad >= MAX_GENEROS) {
+    if (*cantidad >= MAX_GENEROS) {
         printf("Llegaste al limite de generos\n");
         return;
     }
@@ -133,7 +133,7 @@ void altaGen(stGenero lista[], int *cantidad)
 
         if (strlen(nuevo.nombre) == 0) {
             printf("ERROR: EL NOMBRE ESTA VACIO\n");
-        } else if (buscarGenXNombre(lista, cantidad, nuevo.nombre) != -1) {
+        } else if (buscarGenXNombre(lista, *cantidad, nuevo.nombre) != -1) {
             printf("Ya existe un genero con ese nombre, ingrese otro\n");
             nuevo.nombre[0] = '\0';
         }
@@ -150,10 +150,10 @@ void altaGen(stGenero lista[], int *cantidad)
 
     } while (strlen(nuevo.descripcion) == 0);
 
-    nuevo.idGenero = generarIDGEN(lista, cantidad);
+    nuevo.idGenero = generarIDGEN(lista, *cantidad);
     nuevo.activo   = ACTIVO;
 
-    lista[cantidad] = nuevo;
+    lista[*cantidad] = nuevo;
     cantidad++;
 
     printf("Genero "%s" agregado con ID %d.\n", nuevo.nombre, nuevo.idGenero);
