@@ -71,6 +71,7 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
   fgets(nuevo.nombre, sizeof(nuevo.nombre), stdin);
   nuevo.nombre[strcspn(nuevo.nombre, "\n")] = '\0';
   ///----------EMAIL-------
+    
   do {
     printf("\nIngrese el email : ");
     fflush(stdin);
@@ -78,7 +79,7 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
     auxEmail[strcspn(auxEmail, "\n")] = '\0';
 
     if(!verificarEmailUnico(usuarios, validos, auxEmail)){
-        printf("\nError. El email se encuentra registrado. Intenta con otro...\n");
+      printf("\nError. El email se encuentra registrado. Intenta con otro...\n");
     }
   } while(!verificarEmailUnico(usuarios, validos, auxEmail));
           strcpy(nuevo.email, auxEmail);
@@ -107,12 +108,9 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
             printf("Opcion invalida.\n");
         }
     } while (opcionRol != 1 && opcionRol != 2);
-
       nuevo.activo = 1;
-
       usuarios[validos] = nuevo;
       printf("\nUsuario creado con exito. ID asignado: %d\n", nuevo.idUsuario);
-
      return validos + 1;
 }
 
@@ -120,28 +118,28 @@ int bajaUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     int eliminado = 0;
     int indice = buscarUsuarioPorNombreRecursivo(usuarios, validos, nombreBuscar, 0);
     if(indice != -1) {
-      if(usuarios[indice].activo == 0) {
-      printf("\nEl usuario ya esta dado de baja.\n");
-      eliminado = -1;
-    } else if (strcmp(usuarios[indice].rol, "administrador") == 0 && contarAdministradoresActivos(usuarios, validos)<= 1){
-      printf("\nNo se puede eliminar al unico administrador activo..");
-      eliminado = -1;
-    } else {
-      usuarios[indice].activo = 0;
-      printf("\nUsuario %s dado de baja correctamente.\n", nombreBuscar);
-      eliminado = 1;
+          if(usuarios[indice].activo == 0) {
+               printf("\nEl usuario ya esta dado de baja.\n");
+              eliminado = -1;
+    }     else if (strcmp(usuarios[indice].rol, "administrador") == 0 && contarAdministradoresActivos(usuarios, validos)<= 1){
+                   printf("\nNo se puede eliminar al unico administrador activo..");
+                   eliminado = -1;
+        } else {
+          usuarios[indice].activo = 0;
+            printf("\nUsuario %s dado de baja correctamente.\n", nombreBuscar);
+           eliminado = 1;
       }
-   }  else {
-      printf("\nUsuario no encontrado.\n");
+   }   else {
+          printf("\nUsuario no encontrado.\n");
     }
-     return eliminado;
+          return eliminado;
 }
 
 void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]){ // a terminar..
 }
 
 void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos) {
- int i, j;
+  int i, j;
   stUsuario aux;
   for(i = 0; i < validos - 1; i++){
       for(j = 0; j < validos - i - 1; j++){
@@ -149,8 +147,8 @@ void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos) {
           aux = usuarios[j];
           usuarios[j] = usuarios[j + 1];
           usuarios[j + 1] = aux;
-         }
-       }
+      }
+     }
      }
  }
 
