@@ -20,5 +20,6 @@ int bajaUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]);
 void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]);
 void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos);
 void mostrarListaUsuarios(stUsuario usuarios[], int validos);
+void menuDeUsuarios(stUsuario usuarios[], int *validos);
 
 #endif
