@@ -347,9 +347,9 @@ void mostrarContenido(stContenido contenido){
     }
 
     if(contenido.activo == ACTIVO){
-        printf("\n Contenido activo. ");
+        printf("\n Contenido activo.\n\n ");
     }else{
-        printf("\n Contenido inactivo. ");
+        printf("\n Contenido inactivo.\n\n ");
     }
 }
 
