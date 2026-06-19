@@ -9,15 +9,12 @@
 #include "USUARIOS.h"
 #include "Visualizaciones.h"
 
+// Funcion rustica para ver si mandan puros espacios en blanco
 int verificarEspacios(char texto[]) {
     int i = 0;
-    if (strlen(texto) == 0) {
-        return 1;
-    }
+    if (strlen(texto) == 0) return 1;
     while (texto[i] != '\0') {
-        if (texto[i] != ' ' && texto[i] != '\n') {
-            return 0; // Tiene letras o numeros, pasa
-        }
+        if (texto[i] != ' ' && texto[i] != '\n') return 0; // Tiene letras o numeros
         i++;
     }
     return 1; // Eran puros espacios
@@ -37,25 +34,23 @@ int main() {
     stVisualizacion arreglovistas[MAX_VISUALIZACIONES];
     int cantVistas = 0;
 
-    // Variables en español 
+    // Variables en español
     char correo[50];
     char contra[30];
     int intentos = 0;
     int ingresoExitoso = 0;
     stUsuario usuarioLogueado;
     int esAdministrador = 0;
-    
-    // Variables para la brujula y validaciones
+
+    // Variables para la brujula
     int opcionBrujula = -1;
-    int chequeo = 0;
+    char bufferMenu[10];
     int idsGenerosActivos[MAX_CONTENIDOS];
     int idsContenidosActivos[MAX_CONTENIDOS];
     int totalActivos = 0;
 
-    // Arrancamos cargando la base de datos
     cargarTodo(arreglocontenidos, &cantContenidos, arreglogeneros, &cantGeneros, arreglousuarios, &cantUsuarios, arreglovistas, &cantVistas);
 
-    // Si borraron el archivo, creamos uno de cero
     if (cantUsuarios == 0) {
         printf("\n No se encontraron usuarios. Registrando el primer administrador...\n");
         cantUsuarios = altaUsuario(arreglousuarios, cantUsuarios, MAX_USUARIOS);
@@ -70,22 +65,25 @@ int main() {
         printf("          PLATAFORMA DE PELICULAS          \n");
         printf("-------------------------------------------\n");
         printf(" Intentos: %d/3\n\n", intentos);
-        
+
         printf(" Ingrese su correo: ");
-        fflush(stdin);
-        fgets(correo, sizeof(correo), stdin);
-        correo[strcspn(correo, "\n")] = '\0';
+        // Truco antifallos: Leer hasta que haya texto real (ignora enters fantasmas)
+        do {
+            fgets(correo, sizeof(correo), stdin);
+            correo[strcspn(correo, "\n")] = '\0';
+        } while (strlen(correo) == 0);
 
         printf(" Ingrese su contrasenia: ");
-        fflush(stdin);
-        fgets(contra, sizeof(contra), stdin);
-        contra[strcspn(contra, "\n")] = '\0';
+        do {
+            fgets(contra, sizeof(contra), stdin);
+            contra[strcspn(contra, "\n")] = '\0';
+        } while (strlen(contra) == 0);
 
         if (verificarEspacios(correo) == 1 || verificarEspacios(contra) == 1) {
             printf("\n Error: No se puede dejar campos vacios.\n");
             intentos++;
             system("pause");
-            continue; 
+            continue;
         }
 
         // Busqueda secuencial del usuario
@@ -93,7 +91,7 @@ int main() {
             if (strcasecmp(arreglousuarios[i].email, correo) == 0 && strcmp(arreglousuarios[i].contrasenia, contra) == 0 && arreglousuarios[i].activo == 1) {
                 ingresoExitoso = 1;
                 usuarioLogueado = arreglousuarios[i];
-                
+
                 if (strcasecmp(usuarioLogueado.rol, "administrador") == 0) {
                     esAdministrador = 1;
                 }
@@ -127,21 +125,21 @@ int main() {
         printf(" 0   - Guardar todo y salir\n");
         printf("-------------------------------------------\n");
         printf(" Elija un destino: ");
-        
-        fflush(stdin);
-        chequeo = scanf("%d", &opcionBrujula);
 
+        // Leemos el menú con fgets para no usar scanf y evitar que se trabe
+        do {
+            fgets(bufferMenu, sizeof(bufferMenu), stdin);
+            bufferMenu[strcspn(bufferMenu, "\n")] = '\0';
+        } while (strlen(bufferMenu) == 0);
 
-        if (chequeo != 1) {
-            printf("\n Ingrese solo numeros validos (100, 200, etc).\n");
-            opcionBrujula = -1; 
-            system("pause");
-            continue;
+        opcionBrujula = atoi(bufferMenu); // Convierte el texto a número
+        if (opcionBrujula == 0 && bufferMenu[0] != '0') {
+            opcionBrujula = -1; // Si tipearon letras, forzamos el error
         }
 
         switch (opcionBrujula) {
-            case 100:
-                menuContenido(arreglocontenidos, &cantContenidos, arreglogeneros, cantGeneros, arreglovistas, cantVistas);
+           case 100:
+                menuContenido(arreglocontenidos, &cantContenidos, arreglogeneros, cantGeneros, arreglovistas, cantVistas, esAdministrador);
                 break;
 
             case 200:
@@ -155,7 +153,7 @@ int main() {
                 if (esAdministrador == 1) {
                     menuDeUsuarios(arreglousuarios, &cantUsuarios);
                 } else {
-                    printf("\n Usted no es administrador. No tiene permiso para entrar aca.\n");
+                    printf("\n Usted no es administrador. No tiene permiso.\n");
                     system("pause");
                 }
                 break;
@@ -179,10 +177,8 @@ int main() {
                 break;
 
             default:
-                if (opcionBrujula != -1) {
-                    printf("\n Opcion no reconocida. Use las que aparecen en pantalla.\n");
-                    system("pause");
-                }
+                printf("\n Opcion no reconocida. Use las que aparecen en pantalla.\n");
+                system("pause");
                 break;
         }
 
