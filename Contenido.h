@@ -25,7 +25,8 @@ typedef struct {
 
 
 /// Prototipados.
-
+// Menu contenidos.
+void menuContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros, stVisualizacion visualizaciones[], int validosVisualizaciones);
 // Alta de contenido.
 int obtenerProximoIDContenido(stContenido contenidos[], int validos);
 int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]);

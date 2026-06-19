@@ -9,6 +9,87 @@ void limpiarBuffer(void){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+// Menu de contenidos.
+void menuContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros, stVisualizacion visualizaciones[], int validosVisualizaciones){
+
+    int opcion = 0;
+
+    do{
+        system("cls");
+
+        printf("\n========== MENU CONTENIDOS ==========");
+        printf("\n1- Alta de contenido");
+        printf("\n2- Baja de contenido");
+        printf("\n3- Modificar contenido");
+        printf("\n4- Consultar contenido por titulo");
+        printf("\n5- Consultar contenido por ID");
+        printf("\n6- Listar peliculas");
+        printf("\n7- Listar series");
+        printf("\n8- Listar por genero");
+        printf("\n9- Listar contenidos activos");
+        printf("\n0- Volver");
+        printf("\n=====================================");
+        printf("\nIngrese una opcion: ");
+
+        opcion = getch() - '0';
+
+        system("cls");
+
+        switch(opcion){
+
+        case 1:
+            altaContenido(contenidos, validosContenidos, MAX_CONTENIDOS, generos, validosGeneros);
+            break;
+
+        case 2:
+            bajaDeContenido(contenidos, *validosContenidos, visualizaciones, validosVisualizaciones);
+            break;
+
+        case 3:
+            modificarContenido(contenidos, *validosContenidos, generos, validosGeneros);
+            break;
+
+        case 4:
+            consultarContenidoPorTitulo(contenidos, *validosContenidos);
+            break;
+
+        case 5:
+            consultarContenidoPorID(contenidos, *validosContenidos);
+            break;
+
+        case 6:
+            listarPeliculas(contenidos, *validosContenidos);
+            break;
+
+        case 7:
+            listarSeries(contenidos, *validosContenidos);
+            break;
+
+        case 8:
+            listarPorGenero(contenidos, *validosContenidos, generos, validosGeneros);
+            break;
+
+        case 9:
+            listarContenidoActivo(contenidos, *validosContenidos);
+            break;
+
+        case 0:
+            printf("\nVolviendo al menu anterior...");
+            break;
+
+        default:
+            printf("\nOpcion invalida.");
+            break;
+        }
+
+        if(opcion != 0){
+            printf("\n\n");
+            system("pause");
+        }
+
+    }while(opcion != 0);
+
+}
 // Alta de contenidos(solo admis).
 int obtenerProximoIDContenido(stContenido contenidos[], int validos){
 
@@ -61,12 +142,19 @@ int cargarDuracionPelicula(){
 
     do{
         printf("\n Ingrese la duracion de la pelicula. (Entre 40 y 300 minutos)");
-        scanf("%d", &duracion);
+        if(scanf("%d", &duracion) != 1){
+
+                printf("\nOpcion invalida.");
+                limpiarBuffer();
+                duracion = 0;
+            }else{
+
         if(duracion < 40 || duracion > 300){
 
             printf("\n Duracion invalida. Entre 40 y 300 minutos. ");
 
             }
+        }
 
         }while(duracion < 40 || duracion > 300);
 
@@ -114,11 +202,17 @@ int cargarAnio(){
 
     do{
     printf("\n Ingrese el anio. ");
-    scanf("%d", &anio);
-    if(anio < 1895 || anio > 2026){
+    if(scanf("%d", &anio)!= 1){
+            printf("\n Opcion invalida. ");
+            limpiarBuffer();
+            anio = 0;
+    }else{
 
-        printf("\n Anio invalido. (Rango entre 1895 y 2026)\n");
+        if(anio < 1895 || anio > 2026){
 
+            printf("\n Anio invalido. (Rango entre 1895 y 2026)\n");
+
+            }
         }
 
     }while(anio < 1895 || anio > 2026);
@@ -150,6 +244,7 @@ int existenciaDeGenero(stGenero generos[], int validosGeneros, int idGenero){
     return 0;
 }
 int seleccionarGenero(stGenero generos[], int validosGeneros){
+
     int opcion = 0;
     int existe = 0;
 
@@ -157,12 +252,19 @@ int seleccionarGenero(stGenero generos[], int validosGeneros){
         mostrarGeneros(generos, validosGeneros);
 
         printf("\n Ingrese el ID del genero: ");
-        scanf("%d", &opcion);
+        if(scanf("%d", &opcion)!=1){
 
-        existe = existenciaDeGenero(generos, validosGeneros, opcion);
+            printf("\n Opcion invalida. ");
+            limpiarBuffer();
+            existe = 0;
 
-        if(existe == 0){
-            printf("\n Genero invalido. ");
+        }else{
+
+            existe = existenciaDeGenero(generos, validosGeneros, opcion);
+
+            if(existe == 0){
+                printf("\n Genero invalido. ");
+            }
         }
 
     }while(existe == 0);
@@ -294,18 +396,24 @@ int buscarPosicionContenido(stContenido contenidos[], int validos, int idConteni
 void bajaDeContenido(stContenido contenidos[], int validosContenidos, stVisualizacion visualizaciones[], int validosVisualizaciones){
 
     int idContenido = 0;
-    int pos = 0;
+    int pos = -1;
 
     do{
         listarContenidoActivo(contenidos, validosContenidos);
 
         printf("\n Ingrese el ID del contenido que desea dar de baja: ");
-        scanf("%d", &idContenido);
+        if(scanf("%d", &idContenido)!= 1){
 
-        pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+            printf("\n Opcion invalida. ");
+            limpiarBuffer();
+            pos = -1;
+        }else{
 
-        if(pos == -1){
-            printf("\n El contenido no existe. ");
+            pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+
+            if(pos == -1){
+                printf("\n El contenido no existe. ");
+            }
         }
 
     }while(pos == -1);
@@ -327,7 +435,8 @@ void menuDeModificaciones(){
     printf("\n3- Modificar genero.");
     printf("\n4- Modificar sinopsis.");
     printf("\n5- Modificar duracion o estado.");
-    printf("\n0- Guardar todo. ");
+    printf("\n0- Guardar todo. \n");
+    printf("\nSeleccione una opcion. ");
 
 }
 int existenciaDeTituloExceptoID(stContenido contenidos[], int validos, char titulo[], int idContenido){
@@ -347,7 +456,8 @@ void modificarDatosDeContenidos(stContenido *contenidoActual, stContenido conten
 
     do{
         menuDeModificaciones();
-        scanf("%d", &opcion);
+        opcion = getch() - '0';
+        system("cls");
 
         switch(opcion){
 
@@ -388,25 +498,38 @@ void modificarDatosDeContenidos(stContenido *contenidoActual, stContenido conten
                 contenidoActual->estado = cargarEstadoDeSerie();
             }
             break;
+
+        default:
+            printf("\n Opcion invalida. ");
+            Sleep(500);
+            break;
         }
 
     }while(opcion != 0);
 
 }
 void modificarContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros){
-    int idContenido;
-    int pos;
+
+    int idContenido = 0;
+    int pos = -1;
 
     do{
         listarContenidoActivo(contenidos, validosContenidos);
 
         printf("\n Ingrese el ID del contenido a modificar: ");
-        scanf("%d", &idContenido);
+        if(scanf("%d", &idContenido)!=1){
 
-        pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+            printf("\n Opcion invalida. ");
+            limpiarBuffer();
+            pos = -1;
 
-        if(pos == -1){
-            printf("\n Contenido inexistente. ");
+        }else{
+
+            pos = buscarPosicionContenido(contenidos, validosContenidos, idContenido);
+
+            if(pos == -1){
+                printf("\n Contenido inexistente. ");
+            }
         }
 
     }while(pos == -1);
@@ -474,7 +597,13 @@ void consultarContenidoPorID(stContenido contenidos[], int validosContenidos){
     int idContenidoBuscado = 0;
 
     printf("\n Ingrese el ID: ");
-    scanf("%d", &idContenidoBuscado);
+    if(scanf("%d", &idContenidoBuscado)!=1){
+
+        printf("\n Opcion invalida. ");
+        limpiarBuffer();
+        return;
+
+    }
 
     for(int i = 0; i < validosContenidos; i++){
         if(contenidos[i].idContenido == idContenidoBuscado && contenidos[i].activo == ACTIVO){
