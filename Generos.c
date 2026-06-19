@@ -19,43 +19,84 @@ void limpiarNewline(char *s)
 void aMinusculas(const char *origen, char *destino, int tam)
 {
     int i;
+
     for (i = 0; i < tam - 1 && origen[i] != '\0'; i++)
+    {
         destino[i] = tolower(origen[i]);
-}
-///CARGAR Y GUARDAR///
-int cargarGen(stGenero lista[], int *cantidad)
-{
-    FILE *archi = fopen(ARCHIVO_GENEROS, "rb");
-    cantidad = 0;
+    }
 
-    if (archi == NULL) {
-        archi = fopen(ARCHIVO_GENEROS, "wb");
-        if (archi == NULL) {
-            printf("Error: no se pudo crear el archivo\n");
-            return 0;
+    destino[i] = '\0';
+}
+void menuGeneros(stGenero lista[], int *cantidad,int cantContenido,int idGenContenido[],int esAdmin)
+{
+    int opcion;
+    do
+    {
+        puts("\n\n===== MENU GENEROS =====");
+        if(esAdmin)
+        {
+            printf("\n1. Alta de genero");
+            printf("\n2. Baja de genero");
+            printf("\n3. Listar generos");
+            printf("\n0. Volver");
         }
-        fclose(archi);
-        return 1;
-    }
+        else
+        {
+            printf("\n1. Consultar genero");
+            printf("\n2. Listar generos");
+            printf("\n0. Volver");
+        }
 
-    while (*cantidad < MAX_GENEROS && fread(&lista[cantidad], sizeof(stGenero), 1, archi) > 0)
-        cantidad++;
+        printf("\n\nOpcion: ");
+        scanf("%d", &opcion);
+        limpiarBuffer();
 
-    fclose(archi);
-    return 1;
-}
-int guardarGen(stGenero lista[], int cantidad)
-{
-    FILE *archi = fopen(ARCHIVO_GENEROS, "wb");
+        if(esAdmin)
+        {
+            switch(opcion)
+            {
+            case 1:
+                altaGen(lista, cantidad);
+                break;
 
-    if (archi == NULL) {
-        printf("El archivo no se puede abrir\n");
-        return -1;
-    }
+            case 2:
+                bajaGen(lista, *cantidad,cantContenido,idGenContenido);
+                break;
 
-    fwrite(lista, sizeof(stGenero), cantidad, archi);
-    fclose(archi);
-    return 0;
+            case 3:
+                listarGen(lista, *cantidad);
+                break;
+
+            case 0:
+                printf("\nVolviendo...");
+                break;
+
+            default:
+                printf("\nOpcion invalida.");
+            }
+        }
+        else
+        {
+            switch(opcion)
+            {
+            case 1:
+                consultarGen(lista, *cantidad);
+                break;
+
+            case 2:
+                listarGen(lista, *cantidad);
+                break;
+
+            case 0:
+                printf("\nVolviendo...");
+                break;
+
+            default:
+                printf("\nOpcion invalida.");
+            }
+        }
+
+    }while(opcion != 0);
 }
 ///FdB///
 int buscarGenXid(stGenero lista[], int cantidad, int id)
@@ -100,7 +141,7 @@ void listarGen(stGenero lista[], int cantidad)
     int hayActivos = 0;
 
     printf("\n--- GENEROS ACTIVOS ---\n");
-    printf("%5s %50s %s\n", "ID", "Nombre", "Descripcion");
+    printf("%-5s %-50s %s\n", "ID", "Nombre", "Descripcion");
 
     for (i = 0; i < cantidad; i++) {
         if (lista[i].activo == ACTIVO) {
@@ -154,9 +195,9 @@ void altaGen(stGenero lista[], int *cantidad)
     nuevo.activo   = ACTIVO;
 
     lista[*cantidad] = nuevo;
-    cantidad++;
+    (*cantidad)++;
 
-    printf("Genero "%s" agregado con ID %d.\n", nuevo.nombre, nuevo.idGenero);
+    printf("Genero \"%s\" agregado con ID %d.\n", nuevo.nombre, nuevo.idGenero);
 }
 void bajaGen(stGenero lista[], int cantidad, int cantContenido, int idGenContenido[])
 {
