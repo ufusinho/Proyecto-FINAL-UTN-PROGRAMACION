@@ -23,9 +23,8 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
         printf("\n\n");
         printf(" Opcion: ");
 
-        // Leemos la opcion con fgets para no dejar basura en la memoria
         fgets(bufferOpc, sizeof(bufferOpc), stdin);
-        opc = atoi(bufferOpc); // Convierte a numero
+        opc = atoi(bufferOpc); 
 
         switch (opc) {
             case 1:
@@ -37,7 +36,7 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
                 do {
                     fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
                     auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
-                } while(strlen(auxBusqueda) == 0); // Obliga a no dejarlo vacio
+                } while(strlen(auxBusqueda) == 0);
 
                 bajaUsuario(usuarios, *validos, auxBusqueda);
                 system("pause");
@@ -47,7 +46,7 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
                 do {
                     fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
                     auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
-                } while(strlen(auxBusqueda) == 0); // Obliga a no dejarlo vacio
+                } while(strlen(auxBusqueda) == 0); 
 
                 modificarUsuario(usuarios, *validos, auxBusqueda);
                 system("pause");
@@ -57,7 +56,7 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
                 system("pause");
                 break;
             case 0:
-                // No hace nada, sale del do-while y vuelve al main
+                // no hace nada, sale del dowhile y vuelve al main
                 break;
             default:
                 if (bufferOpc[0] != '0') {
@@ -70,7 +69,6 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
 }
 
 
-// BUSCAR USUARIO POR NOMBRE
 int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){
     for(int i = indice; i < validos; i++){
         if(strcasecmp(usuarios[i].nombre, nombre) == 0){
@@ -80,7 +78,6 @@ int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nomb
     return -1;
 }
 
-// BUSCAR EL MAXIMO ID DE USUARIO
 int buscarMaximoIdUsuario(stUsuario usuarios[], int validos){
     int maxId = 0;
     for(int i = 0; i < validos; i++ ){
@@ -91,7 +88,6 @@ int buscarMaximoIdUsuario(stUsuario usuarios[], int validos){
     return maxId;
 }
 
-// VERIFICAR QUE EL EMAIL SEA UNICO
 int verificarEmailUnico(stUsuario usuarios[], int validos, char email[]){
     int unico = 1;
     for(int i = 0; i < validos; i++ ){
@@ -102,7 +98,6 @@ int verificarEmailUnico(stUsuario usuarios[], int validos, char email[]){
     return unico;
 }
 
-// VALIDAR LONGITUD DE CONTRASENIA
 int validarContrasenia(char contrasenia[]){
     int valida = 0;
     if(strlen(contrasenia) >= 6){
@@ -111,7 +106,6 @@ int validarContrasenia(char contrasenia[]){
     return valida;
 }
 
-// CONTAR ADMINISTRADORES ACTIVOS
 int contarAdministradoresActivos(stUsuario usuarios[], int validos){
     int contador = 0;
     for(int i = 0; i < validos; i++){
@@ -122,7 +116,6 @@ int contarAdministradoresActivos(stUsuario usuarios[], int validos){
     return contador;
 }
 
-// CREAR USUARIO
 int altaUsuario(stUsuario usuarios[], int validos, int dimension){
     if (validos >= dimension) {
         printf("Error, no hay espacio en memoria para mas usuarios.,..\n");
@@ -142,15 +135,14 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
         printf("\nIngrese el nombre: ");
         fgets(nuevo.nombre, sizeof(nuevo.nombre), stdin);
         nuevo.nombre[strcspn(nuevo.nombre, "\n")] = '\0';
-    } while(strlen(nuevo.nombre) == 0); // Previene usuarios sin nombre
+    } while(strlen(nuevo.nombre) == 0); 
 
     do {
         do {
             printf("Ingrese el email: ");
             fgets(auxEmail, sizeof(auxEmail), stdin);
             auxEmail[strcspn(auxEmail, "\n")] = '\0';
-        } while(strlen(auxEmail) == 0); // Previene emails en blanco
-
+        } while(strlen(auxEmail) == 0); 
         if(!verificarEmailUnico(usuarios, validos, auxEmail)){
             printf("\nError. El email se encuentra registrado. Intenta con otro...\n");
         }
@@ -162,7 +154,7 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
             printf("Ingrese la contrasenia (minimo 6 caracteres): ");
             fgets(auxContrasenia, sizeof(auxContrasenia), stdin);
             auxContrasenia[strcspn(auxContrasenia, "\n")] = '\0';
-        } while(strlen(auxContrasenia) == 0); // Previene contraseñas vacias
+        } while(strlen(auxContrasenia) == 0); 
 
         if(!validarContrasenia(auxContrasenia)){
             printf("\nLa contrasenia es demasiado corta\n");
@@ -190,7 +182,6 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
     return validos + 1;
 }
 
-// DAR DE BAJA USUARIO
 int bajaUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     int eliminado = 0;
     int indice = buscarUsuarioPorNombreRecursivo(usuarios, validos, nombreBuscar, 0);
@@ -212,7 +203,6 @@ int bajaUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     return eliminado;
 }
 
-// PARA MODIFICAR USUARIO
 void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     int indice = buscarUsuarioPorNombreRecursivo(usuarios, validos, nombreBuscar, 0);
 
@@ -282,7 +272,7 @@ void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
             bufferRol[strcspn(bufferRol, "\n")] = '\0';
 
             if(strlen(bufferRol) == 0 || bufferRol[0] == '0') {
-                break; // El usuario apreto Enter o cero, salimos sin modificar el rol
+                break; 
             }
 
             opcionRol = atoi(bufferRol);
