@@ -9,6 +9,7 @@ void limpiarBufferBis(void)
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+
 void menuVisualizaciones(stVisualizacion lista[], int *cantidad,int idUsuarioLogueado,int esAdmin,int *idsContenidosActivos,int totalActivos)
 {
     int opcion;
@@ -65,44 +66,7 @@ void menuVisualizaciones(stVisualizacion lista[], int *cantidad,int idUsuarioLog
 
     }while(opcion != 0);
 }
-///CARGAR Y GUARDAR///
-int cargarVisualizaciones(stVisualizacion lista[], int *cantidad)
-{
 
-    FILE *fp = fopen(ARCHIVO_VISUALIZACIONES, "rb");
-    *cantidad = 0;
-
-    if(fp == NULL){
-        fp = fopen(ARCHIVO_VISUALIZACIONES, "wb");
-        if(fp == NULL){
-            printf("\n Error: no se pudo crear el archivo de visualizaciones.");
-            return 0;
-        }
-        fclose(fp);
-        return 1;
-    }
-
-    while(*cantidad < MAX_VISUALIZACIONES && fread(&lista[*cantidad], sizeof(stVisualizacion), 1, fp) > 0){
-        (*cantidad)++;
-    }
-
-    fclose(fp);
-    return 1;
-}
-int guardarVisualizaciones(stVisualizacion lista[], int cantidad)
-{
-
-    FILE *fp = fopen(ARCHIVO_VISUALIZACIONES, "wb");
-
-    if(fp == NULL){
-        printf("\n Error: no se pudo abrir el archivo de visualizaciones.");
-        return 0;
-    }
-
-    fwrite(lista, sizeof(stVisualizacion), cantidad, fp);
-    fclose(fp);
-    return 1;
-}
 ///FdB Y AUXILIARES///
 int generarIDVisualizacion(stVisualizacion lista[], int cantidad)
 {
@@ -116,6 +80,7 @@ int generarIDVisualizacion(stVisualizacion lista[], int cantidad)
 
     return maxId + 1;
 }
+
 int buscarVisualizacionDuplicada(stVisualizacion lista[], int cantidad,int idUsuario, int idContenido,int dia, int mes, int anio)
 {
     for(int i = 0; i < cantidad; i++){
@@ -130,6 +95,7 @@ int buscarVisualizacionDuplicada(stVisualizacion lista[], int cantidad,int idUsu
     }
     return -1;
 }
+
 int validarFecha(int dia, int mes, int anio)
 {
     if(anio < 1900 || anio > 2100) return 0;
@@ -144,6 +110,7 @@ int validarFecha(int dia, int mes, int anio)
 
     return dia <= diasPorMes[mes];
 }
+
 void cargarFecha(int *dia, int *mes, int *anio)
 {
     do{
@@ -158,6 +125,7 @@ void cargarFecha(int *dia, int *mes, int *anio)
 
     }while(!validarFecha(*dia, *mes, *anio));
 }
+
 int cargarCalificacion(void)
 {
     int cal = 0;
@@ -174,6 +142,7 @@ int cargarCalificacion(void)
 
     return cal;
 }
+
 ///ABMyC///
 void altaVisualizacion(stVisualizacion lista[], int *cantidad,int idUsuarioLogueado,int *idsContenidosActivos, int totalActivos)
 {
@@ -246,6 +215,7 @@ void altaVisualizacion(stVisualizacion lista[], int *cantidad,int idUsuarioLogue
 
     printf("\n Visualizacion registrada correctamente con ID %d.", nueva.idVisualizacion);
 }
+
 void bajaVisualizacion(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin)
 {
 
@@ -297,6 +267,7 @@ void bajaVisualizacion(stVisualizacion lista[], int cantidad,int idUsuarioLoguea
         printf("\n Baja cancelada.");
     }
 }
+
 ///LISTADO///
 void listarVisualizaciones(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin)
 {
