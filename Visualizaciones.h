@@ -14,7 +14,8 @@ typedef struct {
     int calificacion;   // 1 a 10
     int activo;
 } stVisualizacion;
-
+//menu
+void menuVisualizaciones(stVisualizacion lista[], int *cantidad, int idUsuarioLogueado, int esAdmin, int *idsContenidosActivos, int totalActivos);
 // Cargar y guardar
 int  cargarVisualizaciones(stVisualizacion lista[], int *cantidad);
 int  guardarVisualizaciones(stVisualizacion lista[], int cantidad);
@@ -29,4 +30,6 @@ void altaVisualizacion(stVisualizacion lista[], int *cantidad,int idUsuarioLogue
 void bajaVisualizacion(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin);
 // Consulta y listado
 void listarVisualizaciones(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin);
+
+void limpiarBufferBis();
 #endif
