@@ -4,17 +4,19 @@
 #include "Generos.h"
 
 ///Funciones extras///
-void limpiarBuffer(void)
+void limpiarBufferGen(void)
 {
     int i;
     while ((i = getchar()) != '\n' && i != EOF);
 }
+
 void limpiarNewline(char *s)
 {
     int len = strlen(s);
     if (len > 0 && s[len - 1] == '\n')
         s[len - 1] = '\0';
 }
+
 void aMinusculas(const char *origen, char *destino, int tam)
 {
     int i;
@@ -26,6 +28,7 @@ void aMinusculas(const char *origen, char *destino, int tam)
 
     destino[i] = '\0';
 }
+
 void menuGeneros(stGenero lista[], int *cantidad,int cantContenido,int idGenContenido[],int esAdmin)
 {
     int opcion;
@@ -48,7 +51,7 @@ void menuGeneros(stGenero lista[], int *cantidad,int cantContenido,int idGenCont
 
         printf("\n\nOpcion: ");
         scanf("%d", &opcion);
-        limpiarBuffer();
+        limpiarBufferGen();
 
         if(esAdmin)
         {
@@ -97,6 +100,7 @@ void menuGeneros(stGenero lista[], int *cantidad,int cantContenido,int idGenCont
 
     }while(opcion != 0);
 }
+
 ///FdB///
 int buscarGenXid(stGenero lista[], int cantidad, int id)
 {
@@ -107,6 +111,7 @@ int buscarGenXid(stGenero lista[], int cantidad, int id)
     }
     return -1;
 }
+
 int buscarGenXNombre(stGenero lista[], int cantidad, const char nombre[])
 {
     int  i;
@@ -123,6 +128,7 @@ int buscarGenXNombre(stGenero lista[], int cantidad, const char nombre[])
     }
     return -1;
 }
+
 int generarIDGEN(stGenero lista[], int cantidad)
 {
     int i;
@@ -133,6 +139,7 @@ int generarIDGEN(stGenero lista[], int cantidad)
     }
     return max + 1;
 }
+
 ///LISTADO///
 void listarGen(stGenero lista[], int cantidad)
 {
@@ -152,6 +159,7 @@ void listarGen(stGenero lista[], int cantidad)
     if (hayActivos == 0)
         printf("No hay generos activos\n");
 }
+
 ///ABMyC///
 void altaGen(stGenero lista[], int *cantidad)
 {
@@ -164,7 +172,7 @@ void altaGen(stGenero lista[], int *cantidad)
 
     printf("\n ALTA DE NUEVO GENERO \n");
 
-    limpiarBuffer();
+    limpiarBufferGen();
 
     do {
         printf("Nombre: ");
@@ -198,6 +206,7 @@ void altaGen(stGenero lista[], int *cantidad)
 
     printf("Genero \"%s\" agregado con ID %d.\n", nuevo.nombre, nuevo.idGenero);
 }
+
 void bajaGen(stGenero lista[], int cantidad, int cantContenido, int idGenContenido[])
 {
     int id;
@@ -207,7 +216,7 @@ void bajaGen(stGenero lista[], int cantidad, int cantContenido, int idGenConteni
 
     printf("\nBAJA DE GENERO\n");
     listarGen(lista, cantidad);
-    limpiarBuffer();
+    limpiarBufferGen();
     printf("Ingrese el ID del genero para poder darlo de baja: ");
     scanf("%d", &id);
 
@@ -229,6 +238,7 @@ void bajaGen(stGenero lista[], int cantidad, int cantContenido, int idGenConteni
     lista[pos].activo = INACTIVO;
     printf("El genero %s fue dado de baja\n", lista[pos].nombre);
 }
+
 void modificarGen(stGenero lista[], int cantidad)
 {
     int id;
@@ -241,7 +251,7 @@ void modificarGen(stGenero lista[], int cantidad)
     listarGen(lista, cantidad);
     printf("Ingrese el ID del genero que desee modificar: ");
     scanf("%d", &id);
-    limpiarBuffer();
+    limpiarBufferGen();
 
     pos = buscarGenXid(lista, cantidad, id);
     if (pos == -1 || lista[pos].activo == INACTIVO) {
@@ -273,6 +283,7 @@ void modificarGen(stGenero lista[], int cantidad)
 
     printf("Genero modificado correctamente.\n");
 }
+
 void consultarGen(stGenero lista[], int cantidad)
 {
     char nombre[50];
