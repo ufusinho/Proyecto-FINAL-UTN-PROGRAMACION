@@ -1,4 +1,4 @@
-#ifndef VISUALIZACIONES_H_INCLUDED
+#define VISUALIZACIONES_H_INCLUDED
 #define VISUALIZACIONES_H_INCLUDED
 
 #define ARCHIVO_VISUALIZACIONES "visualizaciones.dat"
@@ -29,13 +29,4 @@ void altaVisualizacion(stVisualizacion lista[], int *cantidad,int idUsuarioLogue
 void bajaVisualizacion(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin);
 // Consulta y listado
 void listarVisualizaciones(stVisualizacion lista[], int cantidad,int idUsuarioLogueado, int esAdmin);
-// Reportes
-void reportePromedioCalificaciones(stVisualizacion lista[], int cantidad,int *idsContenidos, char titulos[][60],int totalContenidos);
-void reporteTop5Contenidos(stVisualizacion lista[], int cantidad,int *idsContenidos, char titulos[][60],int totalContenidos);
-void reporteUsuarioMasVisualizaciones(stVisualizacion lista[], int cantidad,int *idsUsuarios, char nombresUsuarios[][40],int totalUsuarios);
-void reporteContenidosSinVisualizaciones(stVisualizacion lista[], int cantidad,int *idsContenidos, char titulos[][60],int totalContenidos);
-void reporteVisualizacionesUsuario(stVisualizacion lista[], int cantidad,int idUsuario,int *idsContenidos, char titulos[][60],int totalContenidos);
-void reportePromedioUsuario(stVisualizacion lista[], int cantidad, int idUsuario);
-//Busqueda para admin
-void buscarContenidoVistoPorUsuario(stVisualizacion lista[], int cantidad,int *idsUsuarios, char nombresUsuarios[][40],int totalUsuarios,int *idsContenidos, char titulos[][60],int totalContenidos);
 #endif
