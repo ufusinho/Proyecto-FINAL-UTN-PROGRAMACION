@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "USUARIOS.h"
+#define MAX_USUARIOS 50
+
 
 // MENU DE USUARIOS
 void menuDeUsuarios(stUsuario usuarios[], int *validos) {
     int opc = 0;
     char auxBusqueda[40];
+    char bufferOpc[10];
 
     do {
         system("cls");
@@ -19,7 +22,10 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
         printf(" --------------------------------\n");
         printf("\n\n");
         printf(" Opcion: ");
-        scanf("%d", &opc);
+
+        // Leemos la opcion con fgets para no dejar basura en la memoria
+        fgets(bufferOpc, sizeof(bufferOpc), stdin);
+        opc = atoi(bufferOpc); // Convierte a numero
 
         switch (opc) {
             case 1:
@@ -28,18 +34,20 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
                 break;
             case 2:
                 printf("\n Ingrese el nombre del usuario a dar de baja: ");
-                fflush(stdin);
-                fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
-                auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+                do {
+                    fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
+                    auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+                } while(strlen(auxBusqueda) == 0); // Obliga a no dejarlo vacio
 
                 bajaUsuario(usuarios, *validos, auxBusqueda);
                 system("pause");
                 break;
             case 3:
                 printf("\n Ingrese el nombre del usuario a modificar: ");
-                fflush(stdin);
-                fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
-                auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+                do {
+                    fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
+                    auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+                } while(strlen(auxBusqueda) == 0); // Obliga a no dejarlo vacio
 
                 modificarUsuario(usuarios, *validos, auxBusqueda);
                 system("pause");
@@ -49,19 +57,21 @@ void menuDeUsuarios(stUsuario usuarios[], int *validos) {
                 system("pause");
                 break;
             case 0:
-      // No hace nada, sale del do-while y vuelve al main
+                // No hace nada, sale del do-while y vuelve al main
                 break;
-     default:
-        printf("\n Opcion incorrecta.\n");
-    system("pause");
+            default:
+                if (bufferOpc[0] != '0') {
+                    printf("\n Opcion incorrecta.\n");
+                    system("pause");
+                }
                 break;
         }
-    } while (opc != 0);
+    } while (opc != 0 || bufferOpc[0] != '0');
 }
 
 
 // BUSCAR USUARIO POR NOMBRE
-int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){ 
+int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){
     for(int i = indice; i < validos; i++){
         if(strcasecmp(usuarios[i].nombre, nombre) == 0){
             return i;
@@ -76,7 +86,7 @@ int buscarMaximoIdUsuario(stUsuario usuarios[], int validos){
     for(int i = 0; i < validos; i++ ){
         if(usuarios[i].idUsuario > maxId) {
             maxId = usuarios[i].idUsuario;
-        } 
+        }
     }
     return maxId;
 }
@@ -121,43 +131,50 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
     stUsuario nuevo;
     char auxEmail[50];
     char auxContrasenia[30];
+    char bufferRol[10];
     int opcionRol = 0;
+
     printf("\n------- ALTA DE NUEVO USUARIO -----");
 
     nuevo.idUsuario = buscarMaximoIdUsuario(usuarios, validos) + 1;
 
-    printf("\nIngrese el nombre ");
-    fflush(stdin);
-    fgets(nuevo.nombre, sizeof(nuevo.nombre), stdin);
-    nuevo.nombre[strcspn(nuevo.nombre, "\n")] = '\0';
+    do {
+        printf("\nIngrese el nombre: ");
+        fgets(nuevo.nombre, sizeof(nuevo.nombre), stdin);
+        nuevo.nombre[strcspn(nuevo.nombre, "\n")] = '\0';
+    } while(strlen(nuevo.nombre) == 0); // Previene usuarios sin nombre
 
     do {
-        printf("\nIngrese el email :    ");
-        fflush(stdin);
-        fgets(auxEmail, sizeof(auxEmail), stdin);
-        auxEmail[strcspn(auxEmail, "\n")] = '\0';
+        do {
+            printf("Ingrese el email: ");
+            fgets(auxEmail, sizeof(auxEmail), stdin);
+            auxEmail[strcspn(auxEmail, "\n")] = '\0';
+        } while(strlen(auxEmail) == 0); // Previene emails en blanco
+
         if(!verificarEmailUnico(usuarios, validos, auxEmail)){
-            printf("\nError. El email se encuentra registrado Intenta con otro.....\n");
+            printf("\nError. El email se encuentra registrado. Intenta con otro...\n");
         }
     } while(!verificarEmailUnico(usuarios, validos, auxEmail));
     strcpy(nuevo.email, auxEmail);
 
     do {
-        printf("Ingrese la contrasenia (mininmo 6 caracteres): ");
-        fflush(stdin);
-        fgets(auxContrasenia, sizeof(auxContrasenia), stdin);
-        auxContrasenia[strcspn(auxContrasenia, "\n")] = '\0';
+        do {
+            printf("Ingrese la contrasenia (minimo 6 caracteres): ");
+            fgets(auxContrasenia, sizeof(auxContrasenia), stdin);
+            auxContrasenia[strcspn(auxContrasenia, "\n")] = '\0';
+        } while(strlen(auxContrasenia) == 0); // Previene contraseñas vacias
 
         if(!validarContrasenia(auxContrasenia)){
-            printf("\nLa contraseña es demasiado corta\n");
+            printf("\nLa contrasenia es demasiado corta\n");
         }
     } while (!validarContrasenia(auxContrasenia));
     strcpy(nuevo.contrasenia, auxContrasenia);
 
     do {
         printf("Seleccione Rol (1: administrador / 2: comun): ");
-        fflush(stdin);
-        scanf("%d", &opcionRol);
+        fgets(bufferRol, sizeof(bufferRol), stdin);
+        opcionRol = atoi(bufferRol);
+
         if (opcionRol == 1) {
             strcpy(nuevo.rol, "administrador");
         } else if (opcionRol == 2) {
@@ -169,7 +186,7 @@ int altaUsuario(stUsuario usuarios[], int validos, int dimension){
 
     nuevo.activo = 1;
     usuarios[validos] = nuevo;
-    printf("\nUsuario creado con exito ID asignado: %d\n", nuevo.idUsuario);
+    printf("\nUsuario creado con exito. ID asignado: %d\n", nuevo.idUsuario);
     return validos + 1;
 }
 
@@ -210,12 +227,12 @@ void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     }
 
     char entrada[50];
+    char bufferRol[10];
     int opcionRol = 0;
 
-    printf("\n--- MODIFICANDO USUARIO: %s (Deje vacio para no cambiar) ---\n", usuarios[indice].nombre);
+    printf("\n--- MODIFICANDO USUARIO: %s (Deje vacio y presione Enter para no cambiar) ---\n", usuarios[indice].nombre);
 
     printf("Nombre actual: %s\nNuevo nombre: ", usuarios[indice].nombre);
-    fflush(stdin);
     fgets(entrada, sizeof(entrada), stdin);
     entrada[strcspn(entrada, "\n")] = '\0';
     if (strlen(entrada) > 0) {
@@ -224,10 +241,9 @@ void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
 
     do {
         printf("Email actual: %s\nNuevo email: ", usuarios[indice].email);
-        fflush(stdin);
         fgets(entrada, sizeof(entrada), stdin);
         entrada[strcspn(entrada, "\n")] = '\0';
-        
+
         if (strlen(entrada) > 0 && strcasecmp(usuarios[indice].email, entrada) != 0) {
             if (!verificarEmailUnico(usuarios, validos, entrada)) {
                 printf("Error: Ese email ya pertenece a otro usuario!!!\n");
@@ -241,38 +257,46 @@ void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]) {
     } while (1);
 
     do {
-        printf("Contrasenia actual  : %s\n  nueva contrasenia: ", usuarios[indice].contrasenia);
-        fflush(stdin);
+        printf("Contrasenia actual  : %s\nNueva contrasenia: ", usuarios[indice].contrasenia);
         fgets(entrada, sizeof(entrada), stdin);
         entrada[strcspn(entrada, "\n")] = '\0';
-        
+
         if (strlen(entrada) > 0) {
             if (validarContrasenia(entrada)) {
                 strcpy(usuarios[indice].contrasenia, entrada);
                 break;
             } else {
-                printf("Error: Contrasenia invalida\n");
+                printf("Error: Contrasenia invalida (minimo 6 caracteres)\n");
             }
         } else {
             break;
         }
-    } while (1); //bucle infinito
+    } while (1);
 
     if (strcmp(usuarios[indice].rol, "administrador") == 0 && contarAdministradoresActivos(usuarios, validos) <= 1) {
         printf("Rol actual: %s (Protegido por ser el unico administrador activo!!!)\n", usuarios[indice].rol);
     } else {
         do {
-            printf("    Rol actual: %s\n    Nuevo Rol   (1: administrador / 2: comun / 0: No cambiar)     : ", usuarios[indice].rol);
-            fflush(stdin);
-            scanf("%d", &opcionRol);
+            printf("    Rol actual: %s\n    Nuevo Rol   (1: administrador / 2: comun / 0: No cambiar): ", usuarios[indice].rol);
+            fgets(bufferRol, sizeof(bufferRol), stdin);
+            bufferRol[strcspn(bufferRol, "\n")] = '\0';
+
+            if(strlen(bufferRol) == 0 || bufferRol[0] == '0') {
+                break; // El usuario apreto Enter o cero, salimos sin modificar el rol
+            }
+
+            opcionRol = atoi(bufferRol);
+
             if (opcionRol == 1) {
                 strcpy(usuarios[indice].rol, "administrador");
+                break;
             } else if (opcionRol == 2) {
                 strcpy(usuarios[indice].rol, "comun");
-            } else if (opcionRol != 0) {
+                break;
+            } else {
                 printf("Opcion invalida.\n");
             }
-        } while (opcionRol != 1 && opcionRol != 2 && opcionRol != 0);
+        } while (1);
     }
 
     printf("\n    Proceso de modificacion finalizado\n");
@@ -294,16 +318,17 @@ void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos) {
 }
 
 // MOSTRAR LISTA DE USUARIOS
-void mostrarListaUsuarios(stUsuario usuarios[], int validos) { 
+void mostrarListaUsuarios(stUsuario usuarios[], int validos) {
     ordenarUsuariosPorNombre(usuarios, validos);
     printf("\nID / Nombre / Email / Rol\n");
     for (int i = 0; i < validos; i++) {
         if (usuarios[i].activo == 1) {
-            printf("%d / %s / %s / %s\n", 
-                usuarios[i].idUsuario, 
-               usuarios[i].nombre, 
-               usuarios[i].email, 
+            printf("%d / %s / %s / %s\n",
+                usuarios[i].idUsuario,
+               usuarios[i].nombre,
+               usuarios[i].email,
                usuarios[i].rol);
         }
     }
 }
+
