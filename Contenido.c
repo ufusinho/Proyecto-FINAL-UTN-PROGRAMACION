@@ -4,8 +4,6 @@
 #include <windows.h>
 #include "Contenido.h"
 
-// --- FUNCIONES ANTIFALLOS ---
-// Devuelve 1 si el texto está vacio o son puros espacios
 int esVacioOEspacios(char texto[]) {
     if (strlen(texto) == 0) return 1;
     for (int i = 0; texto[i] != '\0'; i++) {
@@ -15,7 +13,6 @@ int esVacioOEspacios(char texto[]) {
     }
     return 1; // Solo habia espacios
 }
-// ----------------------------
 
 // Menu de contenidos.
 void menuContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros, stVisualizacion visualizaciones[], int validosVisualizaciones, int esAdmin){
@@ -48,7 +45,6 @@ void menuContenido(stContenido contenidos[], int *validosContenidos, stGenero ge
         printf("\n=====================================");
         printf("\nIngrese una opcion: ");
 
-        // Leemos con fgets para no dejar basura
         do {
             fgets(buffer, sizeof(buffer), stdin);
             buffer[strcspn(buffer, "\n")] = '\0';
@@ -262,7 +258,6 @@ stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, s
 
     nuevoContenido.idContenido = obtenerProximoIDContenido(contenidos, validosContenidos);
 
-    // BUCLE BLINDADO PARA EL TITULO
     do{
         printf("\n Ingrese el titulo: ");
         fgets(nuevoContenido.titulo, 60, stdin);
@@ -298,7 +293,6 @@ stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, s
 
     nuevoContenido.anio = cargarAnio();
 
-    // BUCLE BLINDADO PARA LA SINOPSIS
     do {
         printf("\n Escriba la sinopsis: ");
         fgets(nuevoContenido.sinopsis, 300, stdin);
@@ -313,7 +307,6 @@ stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, s
 
 void altaContenido(stContenido contenidos[], int *validosContenidos, int dimensionContenidos, stGenero generos[], int validosGeneros){
 
-    // FRENO DE EMERGENCIA POR SI NO HAY GENEROS CREADOS
     if(validosGeneros == 0){
         printf("\n [ERROR] No hay generos creados en el sistema.");
         printf("\n Vaya al Menu de Generos (Opcion 200) y cree al menos uno primero.\n");
@@ -335,7 +328,6 @@ void altaContenido(stContenido contenidos[], int *validosContenidos, int dimensi
     printf("\n Contenido cargado correctamente. ");
 }
 
-// Baja de contenido.
 void mostrarContenido(stContenido contenido){
 
     printf("\n ID: %d ", contenido.idContenido);
