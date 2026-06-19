@@ -3,6 +3,63 @@
 #include <string.h>
 #include "USUARIOS.h"
 
+// MENU DE USUARIOS
+void menuDeUsuarios(stUsuario usuarios[], int *validos) {
+    int opc = 0;
+    char auxBusqueda[40];
+
+    do {
+        system("cls");
+        printf("\n ---// MENU GESTION DE USUARIOS //---\n");
+        printf(" 1. Alta de Usuario\n");
+        printf(" 2. Baja de Usuario\n");
+        printf(" 3. Modificar Usuario\n");
+        printf(" 4. Mostrar Lista de Usuarios\n");
+        printf(" 0. Volver al Menu Principal\n");
+        printf(" --------------------------------\n");
+        printf("\n\n");
+        printf(" Opcion: ");
+        scanf("%d", &opc);
+
+        switch (opc) {
+            case 1:
+                *validos = altaUsuario(usuarios, *validos, MAX_USUARIOS);
+                system("pause");
+                break;
+            case 2:
+                printf("\n Ingrese el nombre del usuario a dar de baja: ");
+                fflush(stdin);
+                fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
+                auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+
+                bajaUsuario(usuarios, *validos, auxBusqueda);
+                system("pause");
+                break;
+            case 3:
+                printf("\n Ingrese el nombre del usuario a modificar: ");
+                fflush(stdin);
+                fgets(auxBusqueda, sizeof(auxBusqueda), stdin);
+                auxBusqueda[strcspn(auxBusqueda, "\n")] = '\0';
+
+                modificarUsuario(usuarios, *validos, auxBusqueda);
+                system("pause");
+                break;
+            case 4:
+                mostrarListaUsuarios(usuarios, *validos);
+                system("pause");
+                break;
+            case 0:
+      // No hace nada, sale del do-while y vuelve al main
+                break;
+     default:
+        printf("\n Opcion incorrecta.\n");
+    system("pause");
+                break;
+        }
+    } while (opc != 0);
+}
+
+
 // BUSCAR USUARIO POR NOMBRE
 int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice){ 
     for(int i = indice; i < validos; i++){
