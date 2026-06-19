@@ -1,0 +1,225 @@
+﻿DOCUMENTACIÓN DE FUNCIONES - PROYECTO FINAL
+
+
+MÓDULO: CONTENIDOS (Contenido.c / Contenido.h)
+void menuContenido(stContenido contenidos[], int *validosContenidos, stGenero generos[], int validosGeneros, stVisualizacion visualizaciones[], int validosVisualizaciones); → Despliega el menú de gestión de contenidos (ABM, consultas y listados) y orquesta las acciones del administrador
+.
+int obtenerProximoIDContenido(stContenido contenidos[], int validos); → Busca el ID de contenido más alto en el arreglo actual y devuelve ese número incrementado en 1 para garantizar un ID único.
+
+
+int existenciaDeTitulo(stContenido contenidos[], int validos, char titulo[]); → Comprueba si un título de contenido ya existe y está activo en el sistema, devuelve 1 o 0.
+
+
+int seleccionDeTipoContenido(void); → Solicita al usuario mediante teclado la selección del tipo de contenido (1 para Película o 2 para Serie).
+
+
+int cargarDuracionPelicula(void); → Solicita el ingreso de la duración de una película y valida que se encuentre entre 40 y 300 minutos.
+
+
+int cargarEstadoDeSerie(void); → Solicita el ingreso del estado actual de una serie (1 para En emisión o 0 para Finalizada).
+
+
+int cargarAnio(void); → Solicita y valida el año de lanzamiento de un contenido dentro del rango de 1895 a 2026.
+
+
+void mostrarGeneros(stGenero generos[], int validosGeneros); → Recorre el arreglo de géneros y muestra por pantalla los datos de aquellos que se encuentran en estado activo.
+
+
+int existenciaDeGenero(stGenero generos[], int validosGeneros, int idGenero); → Verifica si un ID de género específico existe en el sistema y está marcado como activo, devuelve 1 o 0.
+
+
+int seleccionarGenero(stGenero generos[], int validosGeneros); → Muestra la lista de géneros activos, solicita al usuario elegir un ID válido y lo retorna.
+
+
+stContenido cargarUnContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros); → Realiza la carga interactiva de todos los campos de una estructura de contenido y la retorna.
+
+
+void altaContenido(stContenido contenidos[], int *validosContenidos, int dimensionContenidos, stGenero generos[], int validosGeneros); → Controla el flujo completo para dar de alta un contenido en el arreglo en memoria, incrementando el contador de válidos.
+
+
+void mostrarContenido(stContenido contenido); → Imprime de forma formateada por pantalla todos los datos de una estructura de contenido individual.
+
+
+int verificarVisualizaciones(stVisualizacion visualizaciones[], int validosVisualizaciones, int idContenido); → Verifica si un contenido determinado posee visualizaciones activas registradas por los usuarios, devuelve 1 o 0.
+
+
+int buscarPosicionContenido(stContenido contenidos[], int validos, int idContenido); → Realiza una búsqueda secuencial por ID dentro del arreglo de contenidos activos y devuelve su índice o -1.
+
+
+void bajaDeContenido(stContenido contenidos[], int validosContenidos, stVisualizacion visualizaciones[], int validosVisualizaciones); → Realiza la baja lógica de un contenido (activo = 0) si no posee visualizaciones activas asociadas.
+
+
+void menuDeModificaciones(void); → Imprime por pantalla las opciones disponibles para modificar los campos individuales de un contenido.
+
+
+int existenciaDeTituloExceptoID(stContenido contenidos[], int validos, char titulo[], int idContenido); → Comprueba si un título ingresado ya está siendo usado por otro contenido activo diferente al que se modifica, devuelve 1 o 0.
+
+
+void modificarDatosDeContenidos(stContenido *contenidoActual, stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros); → Despliega el submenú de modificaciones y altera mediante punteros los atributos específicos de un contenido.
+
+
+void modificarContenido(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros); → Solicita el ID de un contenido a modificar, busca su existencia y, si lo encuentra, inicia el proceso de actualización.
+
+
+void consultarContenidoPorTitulo(stContenido contenidos[], int validosContenidos); → Solicita el ingreso de un título por teclado y realiza una búsqueda insensible a mayúsculas para mostrar la información del contenido.
+
+
+void consultarContenidoPorID(stContenido contenidos[], int validosContenidos); → Solicita un ID por teclado, busca secuencialmente el contenido y muestra sus datos en pantalla.
+
+
+void listarPeliculas(stContenido contenidos[], int validosContenidos); → Filtra y muestra en pantalla todos los contenidos activos cuyo tipo sea "pelicula".
+
+
+void listarSeries(stContenido contenidos[], int validosContenidos); → Filtra y muestra en pantalla todos los contenidos activos cuyo tipo sea "serie".
+
+
+void listarPorGenero(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros); → Solicita la selección de un género y filtra el listado de contenidos activos que coincidan con dicho género.
+void listarContenidoActivo(stContenido contenidos[], int validosContenidos); → Muestra de forma secuencial en pantalla todos los contenidos almacenados en el arreglo cuyo atributo activo sea igual a 1.
+
+
+MÓDULO: GÉNEROS (Generos.c / Generos.h)
+void limpiarNewline(char *s); → Elimina el carácter de salto de línea '\n' al final de una cadena de caracteres reemplazándolo por '\0'.
+
+
+void aMinusculas(const char *origen, char *destino, int tam); → Copia una cadena de texto de un arreglo origen a uno destino convirtiendo todas las letras a minúsculas.
+
+
+void menuGeneros(stGenero lista[], int *cantidad, int cantContenido, int idGenContenido[], int esAdmin); → Despliega el menú de gestión de géneros adaptando las opciones (ABM o consultas) de acuerdo al rol del usuario.
+
+
+int buscarGenXid(stGenero lista[], int cantidad, int id); → Realiza una búsqueda lineal dentro del arreglo de géneros por su ID y devuelve el índice o -1.
+
+
+int buscarGenXNombre(stGenero lista[], int cantidad, const char nombre[]); → Busca de manera insensible a mayúsculas un género activo por su nombre y devuelve el índice o -1.
+
+
+int generarIDGEN(stGenero lista[], int cantidad); → Analiza el arreglo de géneros para encontrar el ID más alto y calcula el siguiente ID secuencial entero.
+
+
+void listarGen(stGenero lista[], int cantidad); → Imprime por consola en formato de tabla las columnas ID, Nombre y Descripción de los géneros activos.
+
+
+void altaGen(stGenero lista[], int *cantidad); → Realiza la carga interactiva controlada de un nuevo género en el arreglo, controlando el límite máximo y evitando nombres duplicados.
+
+
+void bajaGen(stGenero lista[], int cantidad, int cantContenido, int idGenContenido[]); → Ejecuta la baja lógica de un género comprobando antes que ningún contenido activo actual dependa de él.
+
+
+void modificarGen(stGenero lista[], int cantidad); → Permite la edición opcional y validada del nombre y la descripción de un género activo específico.
+
+
+void consultarGen(stGenero lista[], int cantidad); → Busca un género por nombre y, si lo encuentra activo, muestra detalladamente sus atributos en pantalla.
+
+
+MÓDULO: USUARIOS (USUARIOS.c / USUARIOS.h)
+int buscarUsuarioPorNombreRecursivo(stUsuario usuarios[], int validos, char nombre[], int indice); → Examina secuencialmente el arreglo de usuarios desde un índice inicial para encontrar una coincidencia de nombre, devuelve el índice o -1.
+
+
+int buscarMaximoIdUsuario(stUsuario usuarios[], int validos); → Recorre el vector de usuarios y localiza el valor numérico máximo de ID asignado hasta el momento.
+int verificarEmailUnico(stUsuario usuarios[], int validos, char email[]); → Recorre los registros de usuarios para constatar que una dirección de correo no esté duplicada, devuelve 1 si es único o 0 si está usado.
+
+
+int validarContrasenia(char contrasenia[]); → Comprueba que la longitud de caracteres de una clave sea mayor o igual a 6, devuelve 1 (válida) o 0 (inválida).
+
+
+int contarAdministradoresActivos(stUsuario usuarios[], int validos); → Calcula y retorna la cantidad total de cuentas vigentes que poseen el rol "administrador".
+
+
+int altaUsuario(stUsuario usuarios[], int validos, int dimension); → Controla el registro interactivo de un nuevo usuario en memoria con asignación automática de ID y retorna el nuevo valor de válidos.
+
+
+int bajaUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]); → Realiza la desactivación de una cuenta (activo = 0) impidiendo la operación si es el único administrador activo del sistema, devuelve 1, -1 o 0.
+
+
+void modificarUsuario(stUsuario usuarios[], int validos, char nombreBuscar[]); → Gestiona la edición interactiva de los datos de un usuario (nombre, clave, correo o rol) protegiendo al administrador único.
+
+
+void ordenarUsuariosPorNombre(stUsuario usuarios[], int validos); → Ordena alfabéticamente de menor a mayor el arreglo de usuarios mediante el algoritmo de intercambio burbuja basándose en el nombre.
+
+
+void mostrarListaUsuarios(stUsuario usuarios[], int validos); → Ordena de forma temporal la lista de usuarios y visualiza en pantalla los registros de todas las cuentas activas.
+
+
+MÓDULO: VISUALIZACIONES (Visualizaciones.c / Visualizaciones.h)
+void menuVisualizaciones(stVisualizacion lista[], int *cantidad, int idUsuarioLogueado, int esAdmin, int *idsContenidosActivos, int totalActivos); → Presenta el menú de operaciones para gestionar los historiales de reproducción segmentando opciones según el rol.
+
+
+int generarIDVisualizacion(stVisualizacion lista[], int cantidad); → Determina de forma secuencial cuál es el ID de visualización más alto y calcula el entero subsiguiente.
+
+
+int buscarVisualizacionDuplicada(stVisualizacion lista[], int cantidad, int idUsuario, int idContenido, int dia, int mes, int anio); → Examina el historial para detectar si un usuario ya registró el mismo contenido en la misma fecha y devuelve su índice o -1.
+
+
+int validarFecha(int dia, int mes, int anio); → Analiza los parámetros de una fecha evaluando límites de meses, días y años bisiestos, devuelve 1 (válida) o 0 (errónea).
+
+
+int cargarCalificacion(void); → Solicita y valida que la puntuación otorgada por un usuario se sitúe estrictamente en el rango del 1 al 10.
+
+
+void cargarFecha(int *dia, int *mes, int *anio); → Solicita los campos numéricos de una fecha de forma interactiva y los valida mediante bucle.
+
+
+void altaVisualizacion(stVisualizacion lista[], int *cantidad, int idUsuarioLogueado, int *idsContenidosActivos, int totalActivos); → Agrega una visualización al sistema o actualiza la calificación anterior si detecta un registro idéntico en la misma fecha.
+
+
+void bajaVisualizacion(stVisualizacion lista[], int cantidad, int idUsuarioLogueado, int esAdmin); → Cambia el atributo activo a 0 de un registro de visualización mediante confirmación del usuario y control de permisos.
+
+
+void listarVisualizaciones(stVisualizacion lista[], int cantidad, int idUsuarioLogueado, int esAdmin); → Muestra por consola las visualizaciones cargadas en memoria filtrando por permisos o mostrando el historial propio.
+
+
+MÓDULO: REPORTES (Reportes.c / Reportes.h)
+void menuReportes(stVisualizacion lista[], int cantidad, int *idsUsuarios, char nombresUsuarios[][40], int totalUsuarios, int *idsContenidos, char titulos[][60], int totalContenidos, int idUsuarioLogueado, int esAdmin); → Despliega el menú estadístico configurando analíticas avanzadas para el administrador o consultas personales para usuarios comunes.
+
+
+void buscarContenidoVistoPorUsuario(stVisualizacion lista[], int cantidad, int *idsUsuarios, char nombresUsuarios[][40], int totalUsuarios, int *idsContenidos, char titulos[][60], int totalContenidos); → Permite al administrador seleccionar una cuenta de usuario y generar en consola un reporte de todos los contenidos que consumió.
+
+
+void reportePromedioCalificaciones(stVisualizacion lista[], int cantidad, int *idsContenidos, char titulos[][60], int totalContenidos); → Computa y lista de forma tabulada el promedio numérico flotante de calificaciones de cada contenido activo.
+
+
+void reporteTop5Contenidos(stVisualizacion lista[], int cantidad, int *idsContenidos, char titulos[][60], int totalContenidos); → Calcula los promedios globales de todos los elementos, los ordena de forma descendente y lista los 5 mejores contenidos puntuados.
+
+
+void reporteUsuarioMasVisualizaciones(stVisualizacion lista[], int cantidad, int *idsUsuarios, char nombresUsuarios[][40], int totalUsuarios); → Realiza un conteo estadístico para identificar qué cuenta de usuario posee el mayor número absoluto de reproducciones activas.
+
+
+void reporteContenidosSinVisualizaciones(stVisualizacion lista[], int cantidad, int *idsContenidos, char titulos[][60], int totalContenidos); → Identifica y lista en la interfaz aquellos contenidos cargados en la plataforma que no registran ninguna visualización.
+
+
+void reporteVisualizacionesUsuario(stVisualizacion lista[], int cantidad, int idUsuario, int *idsContenidos, char titulos[][60], int totalContenidos); → Genera un resumen en pantalla exclusivo para que el usuario común pueda consultar cronológicamente su propio historial de consumos.
+void reportePromedioUsuario(stVisualizacion lista[], int cantidad, int idUsuario); → Calcula el promedio general de las calificaciones que un usuario común otorgó a los contenidos reproducidos en su historial.
+
+
+MÓDULO: PERSISTENCIA (Persistencia.c / Persistencia.h)
+int cargarContenido(stContenido contenidos[], int *validosContenidos); → Abre el archivo binario "contenido.dat" y vuelca secuencialmente todos sus registros en el vector en memoria, devuelve 1 o 0.
+
+
+int guardarContenidos(stContenido contenidos[], int validosContenidos); → Sobreescribe por completo el archivo binario "contenido.dat" con el estado actual del arreglo de contenidos de la memoria RAM, devuelve 1 o 0.
+
+
+int cargarGeneros(stGenero lista[], int *cantidad); → Lee los datos binarios desde "generos.dat" hacia el vector en memoria e inicializa el contador de válidos, devuelve 1 o 0.
+
+
+int guardarGeneros(stGenero lista[], int cantidad); → Vuelca los elementos estructurados del vector de géneros en el bloque del archivo físico "generos.dat", devuelve 1 o 0.
+
+
+int cargarUsuarios(stUsuario usuarios[], int *validosUsuarios); → Carga los perfiles guardados en "usuarios.dat" en el vector de usuarios de la memoria de ejecución, devuelve 1 o 0.
+
+
+int guardarUsuarios(stUsuario usuarios[], int validosUsuarios); → Almacena de forma binaria permanente las modificaciones, registros y estados del arreglo de usuarios en "usuarios.dat", devuelve 1 o 0.
+
+
+int cargarVisualizaciones(stVisualizacion lista[], int *cantidad); → Recupera de forma binaria todos los registros históricos de visualizaciones desde "visualizaciones.dat" al vector de memoria, devuelve 1 o 0.
+
+
+int guardarVisualizaciones(stVisualizacion lista[], int cantidad); → Graba de forma definitiva la colección de historiales de visualización en el archivo binario "visualizaciones.dat", devuelve 1 o 0.
+
+
+void cargarTodo(stContenido contenidos[], int *validosContenidos, stGenero generos[], int *validosGeneros, stUsuario usuarios[], int *validosUsuarios, stVisualizacion visualizaciones[], int *validosVisualizaciones); → Orquesta la carga automática secuencial de todos los archivos del sistema hacia las estructuras internas al arrancar la aplicación.
+
+
+void guardarTodo(stContenido contenidos[], int validosContenidos, stGenero generos[], int validosGeneros, stUsuario usuarios[], int validosUsuarios, stVisualizacion visualizaciones[], 
+
+
+int validosVisualizaciones); → Centraliza el volcado final e íntegro de todos los vectores de datos de la sesión hacia sus respectivos archivos binarios persistentes en disco al cerrar el software.
