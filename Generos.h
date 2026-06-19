@@ -23,5 +23,7 @@ void listarGen(stGenero lista[],int cantidad);
 int buscarGenXid(stGenero lista[], int cantidad, int id);
 int buscarGenXNombre(stGenero lista[], int cantidad, const char nombre[]);
 int generarIDGEN(stGenero lista[],int cantidad);
+void menuGeneros(stGenero lista[], int *cantidad, int cantContenido, int idGenContenido[], int esAdmin);
+void limpiarBufferGen();
 
 #endif
