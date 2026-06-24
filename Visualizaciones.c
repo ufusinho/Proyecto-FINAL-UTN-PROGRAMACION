@@ -71,14 +71,16 @@ void menuVisualizaciones(stVisualizacion lista[], int *cantidad,int idUsuarioLog
 int generarIDVisualizacion(stVisualizacion lista[], int cantidad)
 {
     int maxId = 0;
-
+    int nuevoID = 0;
     for(int i = 0; i < cantidad; i++){
         if(lista[i].idVisualizacion > maxId){
             maxId = lista[i].idVisualizacion;
         }
     }
 
-    return maxId + 1;
+    nuevoID = maxId + 1;
+
+    return nuevoID;
 }
 
 int buscarVisualizacionDuplicada(stVisualizacion lista[], int cantidad,int idUsuario, int idContenido,int dia, int mes, int anio)
@@ -107,8 +109,12 @@ int validarFecha(int dia, int mes, int anio)
     if((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0)){
         diasPorMes[2] = 29;
     }
+        if(dia > diasPorMes[mes]){
+            valido = 0;
+        }
+    }
 
-    return dia <= diasPorMes[mes];
+    return valido;
 }
 
 void cargarFecha(int *dia, int *mes, int *anio)
